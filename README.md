@@ -1,14 +1,15 @@
 # Claude Kitbash
 
-Shareable Claude Code plugins for **beads** issue tracking and **jj** (Jujutsu) version control workflows.
+Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) version control, and code quality workflows.
 
 ## Plugins
 
-| Plugin | Description | Dependencies |
-|--------|-------------|--------------|
-| `beads@kitbash` | Beads issue tracking skills | None |
-| `jj@kitbash` | Jujutsu version control skills | None |
-| `workflow@kitbash` | Workflow commands (/kick-off, /next, /check) | beads, jj |
+| Plugin | Description | Contents |
+|--------|-------------|----------|
+| `beads@kitbash` | Beads issue tracking | Skills, SessionStart hook |
+| `jj@kitbash` | Jujutsu version control | Skills (jj, jj-workspace, spawn-worker), SessionStart hook |
+| `workflow@kitbash` | Workflow commands | /kick-off, /next, /check |
+| `code-quality@kitbash` | Code quality tools | code-cleaner agent, cleaning skills |
 
 ## Installation
 
@@ -17,9 +18,10 @@ Shareable Claude Code plugins for **beads** issue tracking and **jj** (Jujutsu) 
 /plugin marketplace add weegigs/claude-kitbash
 
 # Install what you need
-/plugin install beads@kitbash    # Issue tracking only
-/plugin install jj@kitbash       # Version control only
-/plugin install workflow@kitbash # All three (includes dependencies)
+/plugin install beads@kitbash       # Issue tracking
+/plugin install jj@kitbash          # Version control + workspace management
+/plugin install workflow@kitbash    # Workflow commands
+/plugin install code-quality@kitbash # Code cleaning agent
 ```
 
 ### Team Setup
@@ -73,19 +75,35 @@ See: https://martinvonz.github.io/jj/latest/install-and-setup/
 
 Skills for the [beads](https://github.com/steveyegge/beads) issue tracker:
 
-- Session workflow: `bd ready` → `bd update --claim` → work → `bd close`
-- Priority scale: P0 (critical) to P4 (backlog)
-- Dependency tracking: `bd dep add`, `bd blocked`
-- jj-aware sync: `bd sync --from-main`
+| Skill | Purpose |
+|-------|---------|
+| `ready` | Find available work |
+| `show` | View issue details |
+| `create` | Create new issues |
+| `update` | Update issue status |
+| `close` | Complete issues |
+| `list` | List issues by filter |
+| `dep` | Manage dependencies |
+| `sync` | Sync with jj branches |
+| `utilities` | Stats, doctor, blocked |
+
+**SessionStart hook**: Validates `bd` is installed, injects workflow context.
 
 ### jj Plugin
 
 Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 
-- git-to-jj command mapping
-- Commit workflow: `jj split . -m "message"`
-- LLM-friendly diffs: `jj diff --git`
-- Working copy always has `(no description set)`
+| Skill | Purpose |
+|-------|---------|
+| `jj` | Core jj commands and git-to-jj mapping |
+| `split` | Commit workflow: `jj split . -m "message"` |
+| `diff` | LLM-friendly diffs: `jj diff --git` |
+| `status` | Working copy status |
+| `log` | View commit history |
+| `jj-workspace` | Manage isolated workspaces in `~/.jj-workspaces` |
+| `spawn-worker` | Spawn headless Claude agents in jj workspaces |
+
+**SessionStart hook**: Validates `jj` is installed.
 
 ### workflow Plugin
 
@@ -95,9 +113,24 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 | `/next` | Recommend next task based on beads state |
 | `/check` | Verify workflow completion before ending |
 
+### code-quality Plugin
+
+| Component | Purpose |
+|-----------|---------|
+| `code-cleaner` agent | Automated code cleanup with language-specific patterns |
+
+**Cleaning skills** (language-specific patterns):
+- TypeScript
+- Rust
+- Tokio (async Rust)
+- Svelte
+
 ## Session Hooks
 
-Both beads and jj plugins include session start hooks that validate tools are installed and inject quick reference context.
+Both beads and jj plugins include session start hooks that:
+- Validate tools are installed
+- Inject quick reference context
+- Set up workflow state
 
 ## License
 
