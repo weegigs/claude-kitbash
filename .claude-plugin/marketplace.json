@@ -40,6 +40,17 @@
       },
       "source": "./plugins/workflow",
       "category": "productivity"
+    },
+    {
+      "name": "code-quality",
+      "description": "Code quality agents for simplification and design principle enforcement",
+      "version": "1.0.0",
+      "author": {
+        "name": "Wee Gigs",
+        "email": "kevin+claude@weegigs.com"
+      },
+      "source": "./plugins/code-quality",
+      "category": "development"
     }
   ]
 }
