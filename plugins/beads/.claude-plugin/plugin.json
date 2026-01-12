@@ -1,16 +1,9 @@
 {
   "name": "beads",
   "version": "1.0.0",
-  "description": "Beads issue tracking skills. Use when discussing tasks, issues, work tracking, or project management.",
-  "author": "Wee Gigs",
-  "license": "MIT",
-  "skills": ["skills/beads"],
-  "hooks": {
-    "SessionStart": [
-      {
-        "type": "command",
-        "command": "hooks/session-start.sh"
-      }
-    ]
+  "description": "Beads issue tracking skills",
+  "author": {
+    "name": "Wee Gigs",
+    "email": "kevin+claude@weegigs.com"
   }
 }

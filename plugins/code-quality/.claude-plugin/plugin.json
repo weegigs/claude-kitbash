@@ -1,13 +1,9 @@
 {
   "name": "code-quality",
   "version": "1.0.0",
-  "description": "Code quality agents and language-specific cleaning skills.",
-  "author": "Wee Gigs",
-  "license": "MIT",
-  "agents": [
-    "agents/code-cleaner.md"
-  ],
-  "skills": [
-    "skills/cleaning"
-  ]
+  "description": "Code quality agents and cleaning skills",
+  "author": {
+    "name": "Wee Gigs",
+    "email": "kevin+claude@weegigs.com"
+  }
 }

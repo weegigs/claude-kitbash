@@ -1,16 +1,9 @@
 {
   "name": "jj",
   "version": "1.0.0",
-  "description": "Jujutsu (jj) version control skills. Use when discussing version control, commits, branches, diffs, or comparing changes.",
-  "author": "Wee Gigs",
-  "license": "MIT",
-  "skills": ["skills/jj"],
-  "hooks": {
-    "SessionStart": [
-      {
-        "type": "command",
-        "command": "hooks/session-start.sh"
-      }
-    ]
+  "description": "Jujutsu version control skills",
+  "author": {
+    "name": "Wee Gigs",
+    "email": "kevin+claude@weegigs.com"
   }
 }
