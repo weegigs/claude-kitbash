@@ -7,6 +7,98 @@ description: Core Rust idioms - ownership, newtype, error handling, trait patter
 
 Idiomatic Rust patterns. Clippy-clean, no unwrap in production. Updated for Rust 2024 edition.
 
+## Imperative Shell, Functional Core
+
+**The most important architectural pattern.** Separate your code into two layers:
+
+- **Functional Core**: Pure functions with no side effects. Given the same input, always returns the same output. No I/O, no randomness, no current time, no network calls.
+- **Imperative Shell**: Thin layer that handles all I/O and effects—async operations, file access, network calls—then passes clean data to the core.
+
+This separation enables **property-based testing** of your business logic—far more powerful than static unit tests.
+
+```rust
+// ❌ Mixed concerns - hard to test, tightly coupled to I/O
+async fn process_order(db: &Db, order_id: OrderId) -> Result<OrderResult, Error> {
+    let order = db.get_order(&order_id).await?;           // I/O
+    let user = db.get_user(&order.user_id).await?;        // I/O
+    let discount = if user.is_premium { 0.1 } else { 0.0 }; // Logic
+    let total = order.items.iter()                         // Logic
+        .map(|i| i.price.cents() as f64 * (1.0 - discount))
+        .sum::<f64>();
+    db.update_order_total(&order_id, total).await?;       // I/O
+    email_service.send_confirmation(&user.email).await?;  // I/O
+    Ok(OrderResult { order_id, total })
+}
+
+// ✅ Functional Core - pure business logic, easily testable
+#[derive(Debug, Clone)]
+pub struct OrderData {
+    pub items: Vec<Item>,
+    pub is_premium_user: bool,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct OrderCalculation {
+    pub total: Money,
+    pub discount: Percentage,
+    pub discount_applied: bool,
+}
+
+/// Pure function - no I/O, no async, easily testable
+pub fn calculate_order(data: &OrderData) -> OrderCalculation {
+    let discount = if data.is_premium_user {
+        Percentage::new(10)
+    } else {
+        Percentage::new(0)
+    };
+
+    let total = data.items.iter()
+        .map(|item| item.price.apply_discount(discount))
+        .fold(Money::zero(), |acc, price| acc + price);
+
+    OrderCalculation {
+        total,
+        discount,
+        discount_applied: discount.value() > 0,
+    }
+}
+
+// ✅ Imperative Shell - coordinates I/O, calls the core
+async fn process_order(
+    db: &Db,
+    email: &EmailService,
+    order_id: OrderId,
+) -> Result<OrderResult, ProcessError> {
+    // Gather data (I/O)
+    let order = db.get_order(&order_id).await?;
+    let user = db.get_user(&order.user_id).await?;
+
+    // Pure calculation (no I/O)
+    let calculation = calculate_order(&OrderData {
+        items: order.items,
+        is_premium_user: user.is_premium,
+    });
+
+    // Apply effects (I/O)
+    db.update_order_total(&order_id, calculation.total).await?;
+    email.send_confirmation(&user.email).await?;
+
+    Ok(OrderResult {
+        order_id,
+        total: calculation.total,
+        discount_applied: calculation.discount_applied,
+    })
+}
+```
+
+**Benefits**:
+- The functional core can be tested with thousands of generated inputs (property-based testing via `proptest`)
+- No mocks needed for the core—it's just data in, data out
+- The shell is thin and can be tested with a few integration tests
+- Async complexity stays in the shell; the core is sync and simple
+
+**Apply when you see**: `async fn` mixing business logic with `.await` calls, functions that require mocking to test.
+
 ## Make Invalid States Unrepresentable
 
 Use enums and the type system to make illegal states impossible to construct.
@@ -492,3 +584,203 @@ pub struct Config {
 // - Use `?` over `match` for error propagation
 // - Use `unwrap_or_default()` for Default types
 ```
+
+## Property-Based Testing
+
+**Prefer property-based tests over static unit tests.** Static tests check specific examples; property-based tests verify invariants hold across thousands of generated inputs.
+
+The functional core pattern makes this trivial—pure functions are perfect for property testing.
+
+```rust
+use proptest::prelude::*;
+
+// ✅ Property: discount is always 0 or 10
+proptest! {
+    #[test]
+    fn discount_is_valid(
+        items in prop::collection::vec(item_strategy(), 0..100),
+        is_premium in any::<bool>(),
+    ) {
+        let data = OrderData { items, is_premium_user: is_premium };
+        let result = calculate_order(&data);
+
+        prop_assert!(
+            result.discount.value() == 0 || result.discount.value() == 10,
+            "Discount must be 0 or 10, got {}",
+            result.discount.value()
+        );
+    }
+}
+
+// ✅ Property: total is always non-negative
+proptest! {
+    #[test]
+    fn total_is_non_negative(
+        items in prop::collection::vec(item_strategy(), 0..100),
+        is_premium in any::<bool>(),
+    ) {
+        let data = OrderData { items, is_premium_user: is_premium };
+        let result = calculate_order(&data);
+
+        prop_assert!(result.total.cents() >= 0);
+    }
+}
+
+// ✅ Property: premium users always get a discount on non-empty orders
+proptest! {
+    #[test]
+    fn premium_gets_discount(
+        items in prop::collection::vec(item_strategy(), 1..100),
+    ) {
+        let data = OrderData {
+            items,
+            is_premium_user: true,
+        };
+        let result = calculate_order(&data);
+
+        prop_assert!(result.discount_applied);
+    }
+}
+
+// ✅ Property: round-trip serialization preserves data
+proptest! {
+    #[test]
+    fn roundtrip_serialization(user in user_strategy()) {
+        let serialized = serde_json::to_string(&user).unwrap();
+        let deserialized: User = serde_json::from_str(&serialized).unwrap();
+
+        prop_assert_eq!(user, deserialized);
+    }
+}
+
+// Custom strategies for domain types
+fn item_strategy() -> impl Strategy<Value = Item> {
+    (1i64..100_000).prop_map(|cents| Item {
+        price: Money::from_cents(cents),
+    })
+}
+
+fn user_id_strategy() -> impl Strategy<Value = UserId> {
+    "[a-z0-9]{8}".prop_map(|s| UserId::new(format!("usr_{s}")).unwrap())
+}
+
+fn email_strategy() -> impl Strategy<Value = Email> {
+    "[a-z]{5,10}@[a-z]{3,8}\\.[a-z]{2,4}"
+        .prop_map(|s| Email::parse(&s).unwrap())
+}
+
+fn user_strategy() -> impl Strategy<Value = User> {
+    (user_id_strategy(), email_strategy(), any::<bool>())
+        .prop_map(|(id, email, is_premium)| User {
+            id,
+            email,
+            is_premium,
+        })
+}
+```
+
+**Why property tests beat unit tests**:
+- Unit test: "calculate_order with 2 items at $10 returns $20" — tests ONE case
+- Property test: "total equals sum of item prices minus discount" — tests THOUSANDS of cases
+- Property tests find edge cases you'd never think to write
+- When a property test fails, proptest shrinks to the minimal failing case
+
+**Apply when you see**: lots of hand-written example-based tests, test files longer than implementation files.
+
+## Snapshot Testing
+
+**Use `insta` snapshots to catch unintended changes to data structures.** Snapshots are particularly valuable for:
+- Complex struct transformations
+- Serialization formats (JSON, YAML, TOML)
+- Error message formatting
+- State machine transitions
+
+```rust
+use insta::{assert_snapshot, assert_json_snapshot, assert_debug_snapshot};
+
+// ✅ Snapshot complex transformations
+#[test]
+fn test_user_transformation() {
+    let input = RawUserData {
+        id: "usr_123".to_string(),
+        email_address: "TEST@Example.COM".to_string(),
+        created: "2024-01-15T10:30:00Z".to_string(),
+        premium_status: "active".to_string(),
+    };
+
+    let result = transform_user(input);
+
+    // Snapshot captures the entire structure
+    // Any unexpected change fails the test
+    assert_json_snapshot!(result, @r###"
+    {
+      "id": "usr_123",
+      "email": "test@example.com",
+      "created_at": "2024-01-15T10:30:00Z",
+      "account_type": "premium",
+      "subscription_end": "2025-01-15T10:30:00Z"
+    }
+    "###);
+}
+
+// ✅ Snapshot error types
+#[test]
+fn test_validation_errors() {
+    let result = validate_registration(RegistrationInput {
+        email: "not-an-email".to_string(),
+        password: "123".to_string(),
+    });
+
+    assert_debug_snapshot!(result, @r###"
+    Err(
+        ValidationError {
+            fields: {
+                "email": "Invalid email format",
+                "password": "Password must be at least 8 characters",
+            },
+        },
+    )
+    "###);
+}
+
+// ✅ Snapshot state transitions
+#[test]
+fn test_order_state_machine() {
+    let order = Order::new();
+    let submitted = order.transition(OrderEvent::Submit).unwrap();
+    let paid = submitted.transition(OrderEvent::Pay { amount: Money::from_cents(10000) }).unwrap();
+    let shipped = paid.transition(OrderEvent::Ship {
+        tracking: TrackingNumber::new("ABC123").unwrap()
+    }).unwrap();
+
+    assert_snapshot!(format!(
+        "{} -> {} -> {} -> {}",
+        order.status(),
+        submitted.status(),
+        paid.status(),
+        shipped.status()
+    ), @"pending -> submitted -> paid -> shipped");
+}
+
+// ✅ Snapshot API responses
+#[test]
+fn test_api_response_format() {
+    let response = create_api_response(user);
+
+    // Inline snapshots are reviewed in the test file
+    assert_json_snapshot!(response);
+
+    // Or use file-based snapshots for large structures
+    // Creates snapshots/test_api_response_format.snap
+}
+```
+
+**Workflow with insta**:
+1. Write test with `assert_snapshot!`
+2. Run `cargo test` — test fails with diff
+3. Run `cargo insta review` — interactively accept/reject snapshots
+4. Commit the `.snap` files alongside your code
+
+**Combine with property tests**: Use snapshots for specific representative cases, property tests for invariants across all inputs.
+
+**Apply when you see**: complex assertions spread across many `assert_eq!` calls, tests that check only a few fields of a large struct.

@@ -7,6 +7,77 @@ description: Pure functional TypeScript patterns - discriminated unions, branded
 
 Pure functional TypeScript idioms. No React, no classes unless necessary. Updated for TypeScript 5.8+ and ES2025.
 
+## Imperative Shell, Functional Core
+
+**The most important architectural pattern.** Separate your code into two layers:
+
+- **Functional Core**: Pure functions with no side effects. Given the same input, always returns the same output. No I/O, no randomness, no current time, no network calls.
+- **Imperative Shell**: Thin layer that handles all I/O, effects, and coordinates the core. Fetches data, writes to databases, reads environment variables, then passes clean data to the core.
+
+This separation enables **property-based testing** of your business logic—far more powerful than static unit tests.
+
+```typescript
+// ❌ Mixed concerns - hard to test, tightly coupled to I/O
+async function processOrder(orderId: string): Promise<OrderResult> {
+  const order = await db.getOrder(orderId);           // I/O
+  const user = await db.getUser(order.userId);        // I/O
+  const discount = user.isPremium ? 0.1 : 0;          // Logic
+  const total = order.items.reduce((sum, i) =>        // Logic
+    sum + i.price * (1 - discount), 0);
+  await db.updateOrderTotal(orderId, total);          // I/O
+  await emailService.sendConfirmation(user.email);    // I/O
+  return { orderId, total, discountApplied: discount > 0 };
+}
+
+// ✅ Functional Core - pure business logic, easily testable
+type OrderData = {
+  items: Array<{ price: number }>;
+  isPremiumUser: boolean;
+};
+
+type OrderCalculation = {
+  total: number;
+  discount: number;
+  discountApplied: boolean;
+};
+
+function calculateOrder(data: OrderData): OrderCalculation {
+  const discount = data.isPremiumUser ? 0.1 : 0;
+  const total = data.items.reduce(
+    (sum, item) => sum + item.price * (1 - discount),
+    0
+  );
+  return { total, discount, discountApplied: discount > 0 };
+}
+
+// ✅ Imperative Shell - coordinates I/O, calls the core
+async function processOrder(orderId: string): Promise<OrderResult> {
+  // Gather data (I/O)
+  const order = await db.getOrder(orderId);
+  const user = await db.getUser(order.userId);
+
+  // Pure calculation (no I/O)
+  const calculation = calculateOrder({
+    items: order.items,
+    isPremiumUser: user.isPremium,
+  });
+
+  // Apply effects (I/O)
+  await db.updateOrderTotal(orderId, calculation.total);
+  await emailService.sendConfirmation(user.email);
+
+  return { orderId, ...calculation };
+}
+```
+
+**Benefits**:
+- The functional core can be tested with hundreds of generated inputs (property-based testing)
+- No mocks needed for the core—it's just data in, data out
+- The shell is thin and can be tested with a few integration tests
+- Business logic changes don't require changing I/O code and vice versa
+
+**Apply when you see**: `async` functions mixing business logic with `await` calls, functions that are hard to test without mocking.
+
 ## Make Invalid States Unrepresentable
 
 Use the type system to make illegal states impossible to construct.
@@ -419,3 +490,163 @@ export type { User, UserId, CreateUserError };
 export { createUser, deleteUser } from "./user.js";
 export type { User, UserId } from "./types.js";
 ```
+
+## Property-Based Testing
+
+**Prefer property-based tests over static unit tests.** Static tests check specific examples; property-based tests verify invariants hold across thousands of generated inputs.
+
+The functional core pattern makes this trivial—pure functions are perfect for property testing.
+
+```typescript
+import * as fc from "fast-check";
+
+// ✅ Property: discount is always 0 or 0.1
+fc.assert(
+  fc.property(
+    fc.record({
+      items: fc.array(fc.record({ price: fc.nat() })),
+      isPremiumUser: fc.boolean(),
+    }),
+    (data) => {
+      const result = calculateOrder(data);
+      return result.discount === 0 || result.discount === 0.1;
+    }
+  )
+);
+
+// ✅ Property: total is always non-negative
+fc.assert(
+  fc.property(
+    fc.record({
+      items: fc.array(fc.record({ price: fc.nat() })),
+      isPremiumUser: fc.boolean(),
+    }),
+    (data) => {
+      const result = calculateOrder(data);
+      return result.total >= 0;
+    }
+  )
+);
+
+// ✅ Property: premium users always get a discount
+fc.assert(
+  fc.property(
+    fc.record({
+      items: fc.array(fc.record({ price: fc.nat() }), { minLength: 1 }),
+      isPremiumUser: fc.constant(true),
+    }),
+    (data) => {
+      const result = calculateOrder(data);
+      return result.discountApplied === true;
+    }
+  )
+);
+
+// ✅ Property: round-trip serialization preserves data
+fc.assert(
+  fc.property(userArbitrary, (user) => {
+    const serialized = JSON.stringify(user);
+    const deserialized = JSON.parse(serialized);
+    return deepEqual(user, deserialized);
+  })
+);
+
+// Custom arbitraries for domain types
+const emailArbitrary = fc
+  .tuple(fc.emailAddress())
+  .map(([email]) => parseEmail(email));
+
+const moneyArbitrary = fc.integer({ min: 0 }).map((cents) => usd(cents));
+
+const userArbitrary = fc.record({
+  id: fc.uuid().map((id) => userId(`usr_${id}`)),
+  email: emailArbitrary,
+  createdAt: fc.date(),
+});
+```
+
+**Why property tests beat unit tests**:
+- Unit test: "calculateOrder with 2 items at $10 returns $20" — tests ONE case
+- Property test: "total equals sum of item prices minus discount" — tests THOUSANDS of cases
+- Property tests find edge cases you'd never think to write
+- When a property test fails, it shrinks to the minimal failing case
+
+**Apply when you see**: lots of hand-written example-based tests, test files longer than implementation files.
+
+## Snapshot Testing
+
+**Use snapshots to catch unintended changes to data structures.** Snapshots are particularly valuable for:
+- Complex object transformations
+- API response shapes
+- Serialization formats
+- State machine transitions
+
+```typescript
+import { expect, test } from "vitest";
+
+// ✅ Snapshot complex transformations
+test("user transformation", () => {
+  const input: RawUserData = {
+    id: "usr_123",
+    email_address: "TEST@Example.COM",
+    created: "2024-01-15T10:30:00Z",
+    premium_status: "active",
+  };
+
+  const result = transformUser(input);
+
+  // Snapshot captures the entire structure
+  // Any unexpected change fails the test
+  expect(result).toMatchInlineSnapshot(`
+    {
+      "id": "usr_123",
+      "email": "test@example.com",
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "type": "premium",
+      "subscriptionEnd": "2025-01-15T10:30:00.000Z"
+    }
+  `);
+});
+
+// ✅ Snapshot error shapes
+test("validation errors", () => {
+  const result = validateRegistration({
+    email: "not-an-email",
+    password: "123",
+  });
+
+  expect(result).toMatchInlineSnapshot(`
+    {
+      "ok": false,
+      "error": {
+        "type": "validation_failed",
+        "fields": {
+          "email": "Invalid email format",
+          "password": "Password must be at least 8 characters"
+        }
+      }
+    }
+  `);
+});
+
+// ✅ Snapshot state transitions
+test("order state machine", () => {
+  const transitions = [
+    transitionOrder(createOrder(), { type: "submit" }),
+    transitionOrder(submittedOrder, { type: "pay", amount: 100 }),
+    transitionOrder(paidOrder, { type: "ship", trackingNumber: "ABC123" }),
+  ];
+
+  expect(transitions.map(o => o.status)).toMatchInlineSnapshot(`
+    [
+      "submitted",
+      "paid",
+      "shipped"
+    ]
+  `);
+});
+```
+
+**Combine with property tests**: Use snapshots for specific representative cases, property tests for invariants across all inputs.
+
+**Apply when you see**: complex assertions spread across many `expect` calls, tests that check only a few fields of a large object.
