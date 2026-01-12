@@ -1,0 +1,27 @@
+{
+  "name": "kitbash",
+  "description": "Claude Code plugins for jj and beads workflows",
+  "owner": {
+    "name": "Wee Gigs Pty Ltd"
+  },
+  "plugins": [
+    {
+      "name": "beads",
+      "source": "./plugins/beads",
+      "description": "Beads issue tracking skills",
+      "version": "1.0.0"
+    },
+    {
+      "name": "jj",
+      "source": "./plugins/jj",
+      "description": "Jujutsu version control skills",
+      "version": "1.0.0"
+    },
+    {
+      "name": "workflow",
+      "source": "./plugins/workflow",
+      "description": "Workflow commands for beads+jj projects (depends on beads and jj plugins)",
+      "version": "1.0.0"
+    }
+  ]
+}
