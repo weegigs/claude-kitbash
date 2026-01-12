@@ -1,0 +1,16 @@
+{
+  "name": "workflow",
+  "version": "1.0.0",
+  "description": "Workflow commands for beads+jj projects. Use /kick-off to plan, /next to find work, /check to verify completion.",
+  "author": "Wee Gigs",
+  "license": "MIT",
+  "dependencies": [
+    "beads@kitbash",
+    "jj@kitbash"
+  ],
+  "commands": [
+    "commands/kick-off.md",
+    "commands/next.md",
+    "commands/check.md"
+  ]
+}
