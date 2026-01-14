@@ -34,21 +34,40 @@ Libraries: `vitest` (TypeScript), `insta` (Rust)
 
 ## Components
 
-### Agent: code-cleaner
+### Agent: cleaner
 
-Expert code cleaner that applies macro-level design principles:
-
-- Make illegal states unrepresentable
-- Single responsibility principle
-- Parse, don't validate
-- Prefer composition over inheritance
-- Make dependencies explicit
-- Fail fast and loudly
-- Prefer immutability
+Expert code cleaner that applies design principles from `@principles`. Reference for key principles to apply.
 
 ```
-@code-cleaner Review the changes in src/
+@cleaner Review the changes in src/
 ```
+
+### Command: codex-review
+
+Request independent code review from Codex using shared quality principles.
+
+```
+/codex-review
+```
+
+### Skills: principles
+
+Core design principles with do/don't examples in Rust and TypeScript:
+
+| Principle | Description |
+|-----------|-------------|
+| `@architecture` | Imperative shell, functional core |
+| `@illegal-states` | Make illegal states unrepresentable |
+| `@single-responsibility` | One reason to change per unit |
+| `@open-closed` | Open for extension, closed for modification |
+| `@parse-dont-validate` | Validated types at boundaries |
+| `@composition` | Prefer composition over inheritance |
+| `@explicit-dependencies` | No hidden globals or implicit state |
+| `@fail-fast` | Surface errors immediately with context |
+| `@domain-errors` | Errors should be identifiable for action |
+| `@immutability` | Const/readonly by default |
+| `@no-stringly-typed` | Unions/enums over magic strings |
+| `@happy-path` | Left-hand side is the happy path (Go style) |
 
 ### Skills: cleaning
 
@@ -56,20 +75,10 @@ Language-specific patterns loaded automatically by the agent or used standalone:
 
 | Skill | Description |
 |-------|-------------|
-| `typescript` | Pure functional TypeScript—discriminated unions, branded types, Result/Option, iterator helpers |
-| `rust` | Core Rust idioms—ownership, newtype, error handling, trait patterns |
-| `tokio` | Async Rust—spawning, channels, select!, graceful shutdown |
-| `svelte` | Svelte 5 runes + SvelteKit 2—reactivity, load functions, form actions |
-
-#### Standalone Usage
-
-```
-How should I structure this TypeScript module? @typescript
-```
-
-```
-What's the idiomatic way to handle this error in Rust? @rust
-```
+| `@typescript` | Pure functional TypeScript—discriminated unions, branded types, Result/Option |
+| `@rust` | Core Rust idioms—ownership, newtype, error handling, trait patterns |
+| `@tokio` | Async Rust—spawning, channels, select!, graceful shutdown |
+| `@svelte` | Svelte 5 runes + SvelteKit 2—reactivity, load functions, form actions |
 
 ## Directory Structure
 
@@ -78,8 +87,24 @@ code-quality/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── agents/
-│   └── code-cleaner.md
+│   └── cleaner.md
+├── commands/
+│   └── codex-review.md
 ├── skills/
+│   ├── principles/
+│   │   ├── SKILL.md
+│   │   ├── architecture.md
+│   │   ├── illegal-states.md
+│   │   ├── single-responsibility.md
+│   │   ├── open-closed.md
+│   │   ├── parse-dont-validate.md
+│   │   ├── composition.md
+│   │   ├── explicit-dependencies.md
+│   │   ├── fail-fast.md
+│   │   ├── domain-errors.md
+│   │   ├── immutability.md
+│   │   ├── no-stringly-typed.md
+│   │   └── happy-path.md
 │   └── cleaning/
 │       ├── SKILL.md
 │       ├── typescript.md
