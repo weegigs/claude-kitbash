@@ -9,7 +9,7 @@ Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) ver
 | `beads@kitbash` | Beads issue tracking | Skills, SessionStart hook |
 | `jj@kitbash` | Jujutsu version control | Skills (jj, jj-workspace, spawn-worker), SessionStart hook |
 | `workflow@kitbash` | Workflow commands | /kick-off, /next, /check |
-| `code-quality@kitbash` | Code quality tools | code-cleaner agent, cleaning skills |
+| `code-quality@kitbash` | Code quality tools | cleaner agent, codex-review command, principles + cleaning skills |
 
 ## Installation
 
@@ -113,17 +113,21 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 | `/next` | Recommend next task based on beads state |
 | `/check` | Verify workflow completion before ending |
 
-### code-quality Plugin
+### code-quality Plugin (v1.2.0)
 
 | Component | Purpose |
 |-----------|---------|
-| `code-cleaner` agent | Automated code cleanup with language-specific patterns |
+| `cleaner` agent | Automated code cleanup using @cleaner and @principles skills |
+| `/codex-review` command | Independent code review via Codex |
 
-**Cleaning skills** (language-specific patterns):
-- TypeScript
-- Rust
-- Tokio (async Rust)
-- Svelte
+**Skills:**
+
+| Skill | Purpose |
+|-------|---------|
+| `@cleaner` | Code cleaning methodology |
+| `@codex-review` | Codex review process |
+| `@principles` | 12 design principles with Rust/TypeScript examples |
+| `@cleaning` | Language-specific patterns (TypeScript, Rust, Tokio, Svelte) |
 
 ## Session Hooks
 
