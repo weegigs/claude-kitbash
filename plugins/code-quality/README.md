@@ -36,7 +36,7 @@ Libraries: `vitest` (TypeScript), `insta` (Rust)
 
 ### Agent: cleaner
 
-Expert code cleaner that applies design principles from `@principles`. Reference for key principles to apply.
+Expert code cleaner. Loads `@cleaner` skill for methodology and `@principles` for design standards.
 
 ```
 @cleaner Review the changes in src/
@@ -44,11 +44,19 @@ Expert code cleaner that applies design principles from `@principles`. Reference
 
 ### Command: codex-review
 
-Request independent code review from Codex using shared quality principles.
+Request independent code review from Codex. Loads `@codex-review` skill for process.
 
 ```
 /codex-review
 ```
+
+### Skills: cleaner
+
+Code cleaning methodology—process for enhancing clarity, consistency, and maintainability.
+
+### Skills: codex-review
+
+Independent code review process using Codex and shared quality principles.
 
 ### Skills: principles
 
@@ -87,12 +95,16 @@ code-quality/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── agents/
-│   └── cleaner.md
+│   └── cleaner.md           # Loads @cleaner and @principles
 ├── commands/
-│   └── codex-review.md
+│   └── codex-review.md      # Loads @codex-review and @principles
 ├── skills/
+│   ├── cleaner/
+│   │   └── SKILL.md         # Cleaning methodology
+│   ├── codex-review/
+│   │   └── SKILL.md         # Review process
 │   ├── principles/
-│   │   ├── SKILL.md
+│   │   ├── SKILL.md         # Index of design principles
 │   │   ├── architecture.md
 │   │   ├── illegal-states.md
 │   │   ├── single-responsibility.md
@@ -106,7 +118,7 @@ code-quality/
 │   │   ├── no-stringly-typed.md
 │   │   └── happy-path.md
 │   └── cleaning/
-│       ├── SKILL.md
+│       ├── SKILL.md         # Language skill index
 │       ├── typescript.md
 │       ├── rust.md
 │       ├── tokio.md
