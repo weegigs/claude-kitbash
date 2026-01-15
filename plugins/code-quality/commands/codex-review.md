@@ -1,7 +1,6 @@
 ---
-name: Codex Review
+name: codex-review
 description: Request independent code review from Codex using shared quality principles.
-category: Code Quality
 tags: [review, codex, quality]
 ---
 
