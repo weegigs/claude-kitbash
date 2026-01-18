@@ -51,6 +51,17 @@
       },
       "source": "./plugins/code-quality",
       "category": "development"
+    },
+    {
+      "name": "convex",
+      "description": "Convex backend development guidelines and best practices",
+      "version": "1.0.0",
+      "author": {
+        "name": "Wee Gigs",
+        "email": "kevin+claude@weegigs.com"
+      },
+      "source": "./plugins/convex",
+      "category": "development"
     }
   ]
 }

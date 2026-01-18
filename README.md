@@ -1,6 +1,6 @@
 # Claude Kitbash
 
-Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) version control, and code quality workflows.
+Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) version control, **Convex** backend development, and code quality workflows.
 
 ## Plugins
 
@@ -10,6 +10,7 @@ Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) ver
 | `jj@kitbash` | Jujutsu version control | Skills (jj, jj-workspace, spawn-worker), SessionStart hook |
 | `workflow@kitbash` | Workflow commands | /kick-off, /next, /check |
 | `code-quality@kitbash` | Code quality tools | cleaner agent, codex-review command, principles + cleaning skills |
+| `convex@kitbash` | Convex backend development | Skills for functions, schema, storage, scheduling |
 
 ## Installation
 
@@ -22,6 +23,7 @@ Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) ver
 /plugin install jj@kitbash          # Version control + workspace management
 /plugin install workflow@kitbash    # Workflow commands
 /plugin install code-quality@kitbash # Code cleaning agent
+/plugin install convex@kitbash      # Convex backend development
 ```
 
 ### Team Setup
@@ -128,6 +130,18 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 | `@codex-review` | Codex review process |
 | `@principles` | 12 design principles with Rust/TypeScript examples |
 | `@cleaning` | Language-specific patterns (TypeScript, Rust, Tokio, Svelte) |
+
+### convex Plugin (v1.0.0)
+
+Skills for [Convex](https://convex.dev) backend development (adapted for Bun runtime):
+
+| Skill | Purpose |
+|-------|---------|
+| `@convex` | Quick reference - function types, validators, gotchas |
+| `@convex-functions` | Queries, mutations, actions, HTTP endpoints, internal functions |
+| `@convex-schema` | Schema definition, validators, indexes, TypeScript types |
+| `@convex-storage` | File uploads, serving files, storage patterns |
+| `@convex-scheduling` | Cron jobs, scheduled functions |
 
 ## Session Hooks
 

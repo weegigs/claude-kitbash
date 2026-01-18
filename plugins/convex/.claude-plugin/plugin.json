@@ -1,0 +1,9 @@
+{
+  "name": "convex",
+  "version": "1.0.0",
+  "description": "Convex backend development guidelines and best practices",
+  "author": {
+    "name": "Wee Gigs",
+    "email": "kevin+claude@weegigs.com"
+  }
+}
