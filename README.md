@@ -113,10 +113,23 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 
 | Command | Purpose |
 |---------|---------|
-| `/kick-off` | Create execution plan from requirements (injects standards) |
-| `/execute` | Execute plan aggressively in ultrawork mode |
+| `/kick-off` | Create execution plan from requirements |
+| `/execute` | Execute plan in ultrawork mode |
 | `/next` | Recommend next task based on beads state |
 | `/check` | Verify workflow completion before ending |
+
+**`/kick-off` features:**
+- Requires plan mode (verifies and stops if not in plan mode)
+- Injects relevant standards from `.agent-os/standards/`
+- Saves plan to TodoWrite for agent continuity
+- Creates beads tasks with dependencies and checkpoints
+
+**`/execute` features:**
+- Finds plan from TodoWrite, beads, or specs
+- Dual parallel code review: `/codex-review` + `@principles` agent
+- No arbitrary deferrals — completes all planned work
+- No silent TODOs — every TODO requires user approval → beads task
+- No scope reduction without explicit approval
 
 ### code-quality Plugin (v1.2.0)
 
