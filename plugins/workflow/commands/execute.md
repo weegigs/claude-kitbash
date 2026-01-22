@@ -13,6 +13,7 @@ tags: [workflow, execution, beads, ultrawork]
 - Ask questions only when truly blocked, not for confirmation.
 - Run verification at checkpoints, not after every change.
 - Inject relevant standards once at start, reference throughout.
+- **Code review required** — all code changes must be reviewed via `/codex-review` before commit.
 - **No arbitrary priority decisions** — complete all planned work, do not skip tasks to "avoid work".
 - **No silent TODOs** — every TODO/FIXME must be discussed with user and tracked as a beads task under the current epic.
 - **No scope reduction without approval** — if you think something should be deferred, ask first.
@@ -90,12 +91,17 @@ tags: [workflow, execution, beads, ultrawork]
       - Check acceptance criteria met
       - If issues found, fix immediately
 
-   d. **Complete task**:
+   d. **Code review** (required for any code changes):
+      - Run `/codex-review` or use Codex MCP with `jj diff --git` output
+      - Address any issues identified before committing
+      - Self-review alone does NOT satisfy this requirement
+
+   e. **Complete task**:
       - Commit changes: `jj split -m "description" .`
       - Close task: `bd close <id>`
       - Update TodoWrite to track progress
 
-   e. **Check for checkpoint**:
+   f. **Check for checkpoint**:
       - If task was a checkpoint task, run full `/check` verification
       - Otherwise, continue to next task
 
