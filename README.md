@@ -109,11 +109,12 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 
 **SessionStart hook**: Validates `jj` is installed.
 
-### workflow Plugin
+### workflow Plugin (v1.3.0)
 
 | Command | Purpose |
 |---------|---------|
-| `/kick-off` | Create execution plan from requirements |
+| `/kick-off` | Create execution plan from requirements (injects standards) |
+| `/execute` | Execute plan aggressively in ultrawork mode |
 | `/next` | Recommend next task based on beads state |
 | `/check` | Verify workflow completion before ending |
 
