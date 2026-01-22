@@ -1,0 +1,24 @@
+name: tauri-svelte
+version: 1.0.0
+description: Svelte 5 + SvelteKit 2 + Tauri v2 + Rust 2024 + Convex (optional)
+
+standards:
+  # Global
+  - global/tech-stack
+
+  # Rust
+  - rust/error-handling
+  - rust/tauri-commands
+  - rust/workspace-layout
+
+  # Svelte
+  - svelte/runes
+  - svelte/state-modeling
+  - svelte/props-pattern
+
+  # TypeScript
+  - typescript/type-safety
+  - typescript/symbols-for-state
+
+  # Convex (optional)
+  - convex/patterns
