@@ -109,7 +109,7 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 
 **SessionStart hook**: Validates `jj` is installed.
 
-### workflow Plugin (v1.3.0)
+### workflow Plugin (v1.4.0)
 
 | Command | Purpose |
 |---------|---------|
