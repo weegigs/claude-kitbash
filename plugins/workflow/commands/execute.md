@@ -93,7 +93,7 @@ tags: [workflow, execution, beads, ultrawork]
 
    d. **Code review** (required for any code changes):
       - Run **two parallel reviews** for multi-perspective feedback:
-        1. **Codex review**: `/codex-review` or Codex MCP with `jj diff --git` output
+        1. **Codex review**: `/codex-review`
         2. **Principles review**: Spawn agent with `@principles` skill to review against design principles
       - Both reviews run in parallel — do not wait sequentially
       - Address issues from BOTH reviewers before committing
