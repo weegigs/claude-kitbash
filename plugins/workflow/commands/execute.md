@@ -13,12 +13,16 @@ tags: [workflow, execution, beads, ultrawork]
 - Ask questions only when truly blocked, not for confirmation.
 - Run verification at checkpoints, not after every change.
 - Inject relevant standards once at start, reference throughout.
+- **No arbitrary priority decisions** — complete all planned work, do not skip tasks to "avoid work".
+- **No silent TODOs** — every TODO/FIXME must be discussed with user and tracked as a beads task under the current epic.
+- **No scope reduction without approval** — if you think something should be deferred, ask first.
 
 ---
 
 ## Phase 1: Locate Plan
 
 1. **Find active plan** by checking in order:
+   - **Agent TodoWrite** — check for plan saved by `/kick-off` (preferred source)
    - In-progress beads: `bd list --status=in_progress`
    - Recent specs: `ls -t .agent-os/specs/ | head -1`
    - Ready beads with subtasks: `bd ready` then `bd show <id>` for structure
@@ -33,9 +37,11 @@ tags: [workflow, execution, beads, ultrawork]
    Wait for user input.
 
 3. **Load plan context**:
+   - Read TodoWrite for plan structure and context from kick-off
    - Read spec files if in `.agent-os/specs/`
    - Run `bd show <parent-id>` for beads plan structure
    - Identify all subtasks and their dependencies
+   - **Note the parent epic ID** — all new tasks created during execution belong to this epic
 
 ## Phase 2: Assess State
 
@@ -87,7 +93,7 @@ tags: [workflow, execution, beads, ultrawork]
    d. **Complete task**:
       - Commit changes: `jj split -m "description" .`
       - Close task: `bd close <id>`
-      - Update TodoWrite if tracking
+      - Update TodoWrite to track progress
 
    e. **Check for checkpoint**:
       - If task was a checkpoint task, run full `/check` verification
@@ -98,14 +104,23 @@ tags: [workflow, execution, beads, ultrawork]
    - Missing information → ask concise question, continue other work while waiting
    - External dependency → note it, move to next unblocked task
 
+8. **Handle discovered work** (TODOs, FIXMEs, new requirements):
+   - **Never add a TODO/FIXME without user approval**
+   - If you discover work that wasn't in the plan:
+     1. Pause and explain to user what you found
+     2. Ask: "Should I handle this now, or create a beads task to track it?"
+     3. If creating a task: `bd create --title="..." --type=task --parent=<epic-id>`
+     4. All new tasks default to the current epic scope
+   - Do NOT silently defer work or reduce scope
+
 ## Phase 4: Completion
 
-8. **Final verification** when all tasks done:
+9. **Final verification** when all tasks done:
    - Run `/check` for full workflow verification
    - Ensure all beads closed including parent
    - Report completion summary
 
-9. **Completion report**:
+10. **Completion report**:
    ```
    Plan complete: [title]
    
@@ -129,11 +144,12 @@ tags: [workflow, execution, beads, ultrawork]
 ## Ultrawork Principles
 
 **DO**:
-- Make reasonable decisions without asking
+- Make reasonable implementation decisions without asking
 - Batch related questions if multiple blockers arise
 - Continue with other tasks while waiting for answers
 - Trust the plan structure from kick-off
 - Use standards as guardrails, not checklists
+- Complete ALL planned work — no shortcuts
 
 **DON'T**:
 - Ask "should I proceed?" — just proceed
@@ -141,12 +157,22 @@ tags: [workflow, execution, beads, ultrawork]
 - Stop for minor uncertainties — make a call, note if needed
 - Re-verify after every small change — batch at checkpoints
 - Explain what you're about to do — just do it
+- **Skip tasks or reduce scope without explicit approval**
+- **Add TODO/FIXME comments without user discussion**
+- **Make priority decisions that defer planned work**
 
 **ASK ONLY WHEN**:
 - Requirement is genuinely ambiguous (multiple valid interpretations with different outcomes)
 - External resource needed (API key, access, third-party decision)
 - Significant deviation from plan required
 - Blocker after 2 resolution attempts
+- **Discovered work that wasn't in the plan** — always ask before deferring or adding
+
+**TODO/FIXME PROTOCOL**:
+- Never write a TODO without asking user first
+- If approved, create a beads task: `bd create --title="TODO: ..." --parent=<epic-id>`
+- Reference the beads ID in the code comment: `// TODO(beads-XXX): description`
+- No orphan TODOs — every deferred item is tracked
 
 ---
 
@@ -157,6 +183,7 @@ tags: [workflow, execution, beads, ultrawork]
 | `bd show <id>` | Task details and acceptance criteria |
 | `bd update <id> --claim` | Start working on task |
 | `bd close <id>` | Complete task |
+| `bd create --parent=<epic>` | Create task under current epic |
 | `bd blocked` | See dependency chains |
 | `jj split -m "msg" .` | Commit changes |
 | `/check` | Full verification at checkpoints |

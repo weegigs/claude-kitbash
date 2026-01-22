@@ -5,6 +5,8 @@ category: Workflow
 tags: [workflow, planning, beads]
 ---
 
+**Mode**: Plan mode — this command creates a plan, it does NOT implement. Use `/execute` after approval.
+
 **Guardrails**
 - Favor straightforward, minimal implementations first and add complexity only when it is requested or clearly required.
 - Keep execution plans tightly scoped to the requested outcome.
@@ -98,9 +100,14 @@ Phase 3: UI Integration
    - Recommended execution order
    - Any remaining uncertainties or decisions needed
 
-10. **On approval**, remind the user:
-   - Start with `bd update <first-subtask> --claim`
-   - Complete with `/workflow:check` to verify all steps
+10. **Save plan to TodoWrite**:
+   - Write the full plan to TodoWrite for agent continuity
+   - Include parent task ID, all subtask IDs, and execution order
+   - This enables `/execute` to find and resume the plan
+
+11. **On approval**, remind the user:
+   - Run `/execute` to begin implementation
+   - Or start manually with `bd update <first-subtask> --claim`
 
 **Reference**
 - Use `bd ready` to see unblocked tasks
@@ -133,5 +140,6 @@ Phase 3: UI Integration
 - [ ] All beads task IDs documented
 - [ ] Execution order clearly stated
 - [ ] Remaining uncertainties listed (if any)
+- [ ] Plan saved to TodoWrite for agent continuity
 
 **Present this checklist to the user along with the plan.**
