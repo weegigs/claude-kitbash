@@ -7,6 +7,24 @@ tags: [workflow, planning, beads]
 
 **Mode**: Plan mode — this command creates a plan, it does NOT implement. Use `/execute` after approval.
 
+## Entering Plan Mode
+
+Before starting kick-off, ensure Claude is in plan mode to prevent accidental implementation:
+
+**Option 1 (Recommended)**: Start the session with plan mode:
+```bash
+claude --permission-mode plan
+```
+
+**Option 2**: Enter plan mode from within a session:
+```
+/plan
+```
+
+**Option 3**: Toggle modes with `Shift+Tab` until "Plan Mode" is active.
+
+In plan mode, Claude can read and analyze files but cannot edit, create, or execute commands. This ensures the kick-off phase remains pure planning.
+
 **Guardrails**
 - Favor straightforward, minimal implementations first and add complexity only when it is requested or clearly required.
 - Keep execution plans tightly scoped to the requested outcome.
