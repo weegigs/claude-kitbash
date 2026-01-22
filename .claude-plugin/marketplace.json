@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "kitbash",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Claude Code plugins for workflows, version control, issue tracking, and code quality",
   "owner": {
     "name": "Wee Gigs Pty Ltd",
@@ -33,7 +33,7 @@
     {
       "name": "workflow",
       "description": "Workflow commands for beads+jj projects",
-      "version": "1.1.0",
+"version": "1.2.0",
       "author": {
         "name": "Wee Gigs",
         "email": "kevin+claude@weegigs.com"
@@ -62,6 +62,17 @@
       },
       "source": "./plugins/convex",
       "category": "development"
+    },
+    {
+      "name": "agent-os",
+      "description": "Standards discovery, spec planning, and product documentation for AI-assisted development",
+      "version": "1.1.0",
+      "author": {
+        "name": "Wee Gigs",
+        "email": "kevin+claude@weegigs.com"
+      },
+      "source": "./plugins/agent-os",
+      "category": "productivity"
     }
   ]
 }

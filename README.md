@@ -1,6 +1,6 @@
 # Claude Kitbash
 
-Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) version control, **Convex** backend development, and code quality workflows.
+Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) version control, **Convex** backend development, **agent-os** standards/specs, and code quality workflows.
 
 ## Plugins
 
@@ -11,6 +11,7 @@ Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) ver
 | `workflow@kitbash` | Workflow commands | /kick-off, /next, /check |
 | `code-quality@kitbash` | Code quality tools | cleaner agent, codex-review command, principles + cleaning skills |
 | `convex@kitbash` | Convex backend development | Skills for functions, schema, storage, scheduling |
+| `agent-os@kitbash` | Standards & specs | Standards discovery, spec planning, product docs |
 
 ## Installation
 
@@ -24,6 +25,7 @@ Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) ver
 /plugin install workflow@kitbash    # Workflow commands
 /plugin install code-quality@kitbash # Code cleaning agent
 /plugin install convex@kitbash      # Convex backend development
+/plugin install agent-os@kitbash    # Standards discovery & spec planning
 ```
 
 ### Team Setup
@@ -142,6 +144,55 @@ Skills for [Convex](https://convex.dev) backend development (adapted for Bun run
 | `@convex-schema` | Schema definition, validators, indexes, TypeScript types |
 | `@convex-storage` | File uploads, serving files, storage patterns |
 | `@convex-scheduling` | Cron jobs, scheduled functions |
+
+### agent-os Plugin (v1.1.0)
+
+Standards discovery, spec planning, and product documentation for AI-assisted development.
+
+**Main Command:**
+
+| Command | Purpose |
+|---------|---------|
+| `/standards` | One-shot standards management (auto-detects state, offers actions) |
+| `/standards init` | Initialize baseline from a profile |
+| `/standards update` | Update baseline to latest profile version |
+| `/standards discover` | Discover project-specific standards |
+| `/spec` | Shape and plan significant work with optional review |
+| `/plan-product` | Create product documentation structure |
+
+**Supporting Skills:**
+
+| Skill | Purpose |
+|-------|---------|
+| `/standards-inject` | Inject relevant standards into AI context |
+| `/standards-index` | Build/update project standards index |
+| `@spec-review` | Review methodology for implementation plans |
+| `@standards-review` | Review methodology for discovered standards |
+
+**Agents:**
+
+| Agent | Purpose |
+|-------|---------|
+| `spec-reviewer` | Reviews implementation plans for completeness and coherence |
+| `standards-reviewer` | Validates discovered standards for accuracy and usefulness |
+
+**Profiles:**
+
+| Profile | Stack |
+|---------|-------|
+| `tauri-svelte` | Svelte 5 + SvelteKit 2 + Tauri v2 + Rust 2024 + Convex (optional) |
+
+**Directory Structure:**
+```
+.agent-os/
+├── standards/
+│   ├── baseline/      # Profile-managed (via /standards init & update)
+│   └── project/       # User-managed (via /standards discover)
+├── specs/             # Feature specs and implementation plans
+└── product/           # Product documentation
+```
+
+Project standards shadow baseline at the same path. Use `@baseline(path)` to reference baseline content from overrides.
 
 ## Session Hooks
 
