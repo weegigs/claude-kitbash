@@ -30,43 +30,10 @@
       "source": "./plugins/jj",
       "category": "development"
     },
-    {
+{
       "name": "workflow",
       "description": "Workflow commands for beads+jj projects",
-"version": "1.2.0",
-      "author": {
-        "name": "Wee Gigs",
-        "email": "kevin+claude@weegigs.com"
-      },
-      "source": "./plugins/workflow",
-      "category": "productivity"
-    },
-    {
-      "name": "code-quality",
-      "description": "Code quality agents, principles, and review commands",
       "version": "1.2.0",
-      "author": {
-        "name": "Wee Gigs",
-        "email": "kevin+claude@weegigs.com"
-      },
-      "source": "./plugins/code-quality",
-      "category": "development"
-    },
-    {
-      "name": "convex",
-      "description": "Convex backend development guidelines and best practices",
-      "version": "1.0.0",
-      "author": {
-        "name": "Wee Gigs",
-        "email": "kevin+claude@weegigs.com"
-      },
-      "source": "./plugins/convex",
-      "category": "development"
-    },
-    {
-      "name": "agent-os",
-      "description": "Standards discovery, spec planning, and product documentation for AI-assisted development",
-      "version": "1.1.0",
       "author": {
         "name": "Wee Gigs",
         "email": "kevin+claude@weegigs.com"

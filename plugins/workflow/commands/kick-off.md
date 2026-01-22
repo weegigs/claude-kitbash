@@ -26,7 +26,13 @@ tags: [workflow, planning, beads]
    - Dependencies and constraints
    - Similar prior implementations
 
-3. **Ask clarifying questions** using `AskUserQuestion` with 3-5 non-obvious questions:
+3. **Inject relevant standards** (if `.agent-os/standards/` exists):
+   - Check for standards directory: `ls .agent-os/standards/`
+   - If exists, analyze the requirement to identify relevant standards
+   - Inject applicable standards using `/standards-inject` or read directly
+   - Standards inform implementation patterns and constraints for the plan
+
+4. **Ask clarifying questions** using `AskUserQuestion` with 3-5 non-obvious questions:
    - Focus on edge cases, error handling, and implicit assumptions
    - Probe constraints not stated in the requirement (performance, security, backwards compatibility)
    - Clarify acceptance criteria and verification approach
@@ -34,18 +40,18 @@ tags: [workflow, planning, beads]
 
 ## Phase 2: Task Planning
 
-4. **Create or extend the parent beads task**:
+5. **Create or extend the parent beads task**:
    - If input was a beads task - extend it with subtasks
    - Otherwise - run `bd create --title="<requirement summary>" --type=feature|task|bug --priority=2`
 
-5. **Identify logical breakpoints** in the implementation:
+6. **Identify logical breakpoints** in the implementation:
    - Group related subtasks into phases (e.g., "data layer", "business logic", "UI", "integration")
    - Each phase should produce a verifiable, working state
    - Small plans (1-3 tasks) need only a final checkpoint
    - Larger plans should have checkpoints after each logical phase
    - Identify **critical points** requiring code review (e.g., security-sensitive code, complex algorithms, API boundaries)
 
-6. **Break down into atomic subtasks** using `bd create`:
+7. **Break down into atomic subtasks** using `bd create`:
    - Each subtask should be independently verifiable
    - Include clear acceptance criteria in the description
    - Sequence with dependencies using `bd dep add <subtask> <depends-on>`
@@ -59,7 +65,7 @@ tags: [workflow, planning, beads]
        5. Close completed beads tasks with `bd close`
    - Add a final subtask: "Final checkpoint: Run full workflow completion checks"
 
-7. **Generate the execution plan** with:
+8. **Generate the execution plan** with:
    - Ordered list of subtasks with verification steps
    - **Explicit checkpoint tasks** at each breakpoint (not just implied)
    - Files likely to be created or modified per phase
@@ -86,13 +92,13 @@ Phase 3: UI Integration
 
 ## Phase 3: Handoff
 
-8. **Present the plan** to the user including:
+9. **Present the plan** to the user including:
    - Summary of the requirement as understood
    - Parent beads task ID and subtask IDs
    - Recommended execution order
    - Any remaining uncertainties or decisions needed
 
-9. **On approval**, remind the user:
+10. **On approval**, remind the user:
    - Start with `bd update <first-subtask> --claim`
    - Complete with `/workflow:check` to verify all steps
 
@@ -111,6 +117,7 @@ Phase 3: UI Integration
 ### Phase 1: Requirement Analysis
 - [ ] Parsed input and identified source type (free-text / document / beads task)
 - [ ] Explored codebase context (related code, dependencies, prior implementations)
+- [ ] Checked for standards and injected relevant ones (if `.agent-os/standards/` exists)
 - [ ] Asked 3-5 clarifying questions and received answers
 
 ### Phase 2: Task Planning
