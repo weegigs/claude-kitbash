@@ -33,7 +33,7 @@ tags: [workflow, execution, beads, ultrawork]
    No active plan found. Options:
    1. Run /kick-off to create a plan
    2. Specify a beads task ID to execute
-   3. Point me to a spec directory
+   3. Point me to a spec in .agent-os/specs/
    ```
    Wait for user input.
 

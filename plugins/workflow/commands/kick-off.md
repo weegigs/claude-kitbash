@@ -42,7 +42,7 @@ In plan mode, Claude can read and analyze files but cannot edit, create, or exec
 
 1. **Parse the input** to identify the source type:
    - Free-text description - analyze directly
-   - Document reference (e.g., `docs/...`, `openspec/...`) - read and extract requirements
+   - Document reference (e.g., `docs/...`, `.agent-os/specs/...`) - read and extract requirements
    - Beads task reference (e.g., `beads-123`) - run `bd show <id>` to retrieve details
 
 2. **Explore context** using file reads and search to understand:
