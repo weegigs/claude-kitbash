@@ -1,110 +1,208 @@
 ---
 name: spec-review
-description: Review methodology for implementation plans. Used by spec-reviewer agent and Codex.
+description: Review methodology for specifications. Used by spec-reviewer agent and Codex.
 ---
 
 # Spec Review
 
-Methodology for reviewing implementation plans created by `/spec`.
+Methodology for reviewing specifications created by `/spec`. Validates requirements, analysis, and readiness for `/kick-off` execution planning.
+
+## Specification Structure
+
+All specs follow this universal structure:
+
+```markdown
+# [Work Title] - Specification
+
+## 1. Requirements ✓
+[EARS notation requirements with acceptance criteria]
+
+## 2. Analysis ✓
+[Work-type specific: bug analysis, feature analysis, refactor analysis, or research scope]
+
+## 3. Scope ✓
+[In/out scope, complexity assessment]
+
+## 4. Success Criteria ✓
+[Definition of done, testable outcomes]
+
+---
+**Status**: Ready for /kick-off
+**Work Type**: [bug/feature/refactor/research]
+**Complexity**: [simple/moderate/complex]
+```
 
 ## Review Dimensions
 
-### 1. Completeness
+### 1. Requirements Quality (Critical)
 
-Check that the plan addresses:
+Requirements use **EARS notation**: `WHEN [condition] THE SYSTEM SHALL [behavior]`
 
-- [ ] All stated user requirements
-- [ ] Error handling and edge cases
-- [ ] Dependencies between tasks
-- [ ] Integration points with existing code
+**Check that requirements are:**
 
-**Red flags:**
-- Vague tasks like "handle errors appropriately"
-- Missing tasks for obvious requirements
-- No mention of testing or verification
-
-### 2. Coherence
-
-Check that tasks:
-
-- [ ] Flow logically from one to the next
-- [ ] Have clear boundaries (no overlapping scope)
-- [ ] Are ordered correctly (dependencies before dependents)
-- [ ] Don't have gaps (nothing falls through the cracks)
+- [ ] **Specific** — Clear condition and behavior, no ambiguity
+- [ ] **Testable** — Can be verified with a test case
+- [ ] **Complete** — Cover happy path, error cases, edge cases
+- [ ] **Traceable** — Each has user story context
 
 **Red flags:**
-- Task 3 depends on output from Task 5
-- Two tasks that both "set up the database schema"
-- Jump from "create API" to "deploy to production"
+- Vague: "THE SYSTEM SHALL handle errors appropriately"
+- Untestable: "THE SYSTEM SHALL be fast"
+- Incomplete: Only happy path, no error handling
+- Missing user story context
 
-### 3. Standards Alignment
+**Review by Work Type:**
+
+| Work Type | Requirements Focus |
+|-----------|-------------------|
+| **Bug** | Fix behavior + no regression + error handling |
+| **Feature** | User stories + all acceptance criteria + error cases |
+| **Refactor** | Compatibility + behavior preservation + new patterns |
+| **Research** | Questions answered + trade-offs documented |
+
+### 2. Analysis Completeness
+
+**For Bugs:**
+- [ ] Symptom clearly described
+- [ ] Root cause identified (or noted as unknown)
+- [ ] Impact assessed
+- [ ] Regression risks noted
+
+**For Features:**
+- [ ] Problem statement clear
+- [ ] Users identified
+- [ ] Integration points mapped
+- [ ] Dependencies listed
+
+**For Refactors:**
+- [ ] Current state documented
+- [ ] Pain points articulated
+- [ ] Target state defined
+- [ ] Compatibility constraints explicit
+
+**For Research:**
+- [ ] Questions to answer listed
+- [ ] Investigation areas defined
+- [ ] Decision context provided
+
+### 3. Scope Clarity
+
+- [ ] In-scope items explicit
+- [ ] Out-of-scope items explicit
+- [ ] Complexity assessment reasonable
+- [ ] Dependencies identified
+
+**Red flags:**
+- Unbounded scope ("improve performance")
+- Missing complexity assessment
+- Hidden dependencies
+
+### 4. Success Criteria
+
+- [ ] Definition of done is clear
+- [ ] Criteria are measurable/testable
+- [ ] Maps back to requirements
+- [ ] Includes verification approach
+
+**Red flags:**
+- Vague: "Users are happy"
+- Unmeasurable: "System is better"
+- Missing test strategy
+
+### 5. Standards Alignment
 
 Check against `.agent-os/standards/`:
 
-- [ ] Relevant standards are identified
-- [ ] Planned approaches match documented patterns
-- [ ] No conflicts with existing conventions
+- [ ] Relevant standards identified
+- [ ] No conflicts with existing patterns
+- [ ] Standards content included in spec
 
-**Red flags:**
-- Plan ignores applicable standards
-- Approach contradicts documented patterns
-- Standards referenced but not followed
+### 6. Readiness for /kick-off
 
-### 4. Feasibility
-
-Check that:
-
-- [ ] Tasks are appropriately sized (not too big, not trivial)
-- [ ] Hidden complexity is surfaced
-- [ ] Scope is realistic for the stated goal
-
-**Red flags:**
-- "Implement authentication" as a single task
-- Underestimating integration complexity
-- Scope creep beyond original request
+- [ ] All sections complete (Requirements, Analysis, Scope, Success Criteria)
+- [ ] Work type and complexity correctly assessed
+- [ ] Sufficient detail for task generation
+- [ ] No blocking questions remain
 
 ## Review Process
 
-1. **Read the full plan** — Understand intent before critiquing
-2. **Check each dimension** — Use checklists above
-3. **Identify findings** — Categorize as ✓ (good), ⚠ (suggestion), ✗ (issue)
-4. **Provide verdict** — APPROVE, APPROVE_WITH_NOTES, or REQUEST_CHANGES
+1. **Identify work type** — Bug, feature, refactor, or research
+2. **Validate requirements** — EARS notation, testability, completeness
+3. **Check analysis** — Work-type appropriate depth
+4. **Verify scope** — Clear boundaries
+5. **Confirm success criteria** — Measurable outcomes
+6. **Assess readiness** — Ready for /kick-off?
 
 ## Output Format
 
 ```markdown
-## Review Summary
+## Spec Review Summary
 
+**Work Type:** [bug/feature/refactor/research]
 **Overall:** [APPROVE | APPROVE_WITH_NOTES | REQUEST_CHANGES]
 
-### Findings
+### Requirements Review
 
-✓ Requirements clearly mapped to tasks
-✓ Standards properly referenced
+✓ X requirements with Y acceptance criteria
+✓ EARS notation correctly applied
+⚠ Requirement 3 acceptance criteria could be more specific
+✗ Missing error handling requirement for [scenario]
 
-⚠ Consider splitting Task 4 into smaller pieces
+### Analysis Review
 
-✗ Missing error handling for API failures
-✗ Task 2 depends on Task 5 (ordering issue)
+✓ [Work-type] analysis complete
+⚠ Consider adding [missing element]
+
+### Scope Review
+
+✓ Clear boundaries
+✓ Complexity assessment reasonable
+
+### Success Criteria Review
+
+✓ Measurable outcomes defined
+⚠ Add specific metric for [criteria]
+
+### Readiness Assessment
+
+[Ready for /kick-off | Needs revision]
 
 ### Recommendations
 
 [If REQUEST_CHANGES:]
-1. Add error handling task after Task 3
-2. Reorder: move Task 5 before Task 2
+1. Add requirement for [missing scenario]
+2. Clarify acceptance criteria for Requirement 3
+3. Add error handling to success criteria
 ```
 
 ## Verdict Criteria
 
 | Verdict | When to Use |
 |---------|-------------|
-| **APPROVE** | No issues, plan is ready to execute |
-| **APPROVE_WITH_NOTES** | Minor suggestions, but safe to proceed |
-| **REQUEST_CHANGES** | Issues that would cause problems if not addressed |
+| **APPROVE** | Spec is complete and ready for /kick-off |
+| **APPROVE_WITH_NOTES** | Minor suggestions, safe to proceed |
+| **REQUEST_CHANGES** | Issues that would cause problems in execution |
+
+## Test Compliance Check
+
+**Critical for execution phase**: Each acceptance criteria should map to a test:
+
+```markdown
+### Test Mapping Preview
+
+| Requirement | Acceptance Criteria | Test Type |
+|-------------|--------------------|-----------| 
+| R1 | WHEN user logs in... | Integration |
+| R1 | WHEN credentials invalid... | Unit |
+| R2 | WHEN session expires... | Integration |
+```
+
+If acceptance criteria cannot be tested, flag for revision.
 
 ## Principles
 
-- **Constructive over critical** — Suggest improvements, don't just point out flaws
-- **Significant over pedantic** — Focus on things that matter
-- **Concise over verbose** — One-line findings preferred
-- **Respect intent** — Work within the plan author's goals
+- **Requirements-first** — Validate requirements before anything else
+- **Testability matters** — Every acceptance criteria must be verifiable
+- **Constructive** — Suggest improvements, don't just critique
+- **Work-type aware** — Apply appropriate standards per type
+- **Execution-focused** — Spec must be actionable for /kick-off

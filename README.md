@@ -159,7 +159,7 @@ Skills for [Convex](https://convex.dev) backend development (adapted for Bun run
 | `@convex-storage` | File uploads, serving files, storage patterns |
 | `@convex-scheduling` | Cron jobs, scheduled functions |
 
-### agent-os Plugin (v1.2.0)
+### agent-os Plugin (v1.3.0)
 
 Standards discovery, spec planning, and product documentation for AI-assisted development.
 
@@ -175,8 +175,51 @@ Standards discovery, spec planning, and product documentation for AI-assisted de
 | `/standards init` | Initialize baseline from a profile |
 | `/standards update` | Update baseline to latest profile version |
 | `/standards discover` | Discover project-specific standards |
-| `/spec` | Shape and plan significant work with optional review |
+| `/spec` | Universal work preparation (features, bugs, refactors, research) |
 | `/plan-product` | Create product documentation structure |
+
+**`/spec` Workflow (v1.3.0):**
+
+The `/spec` command prepares any work for execution planning. It detects work type and generates appropriate specifications with EARS-notation requirements.
+
+```bash
+/spec fix apple login              # Bug fix workflow
+/spec implement user comments      # Feature workflow
+/spec refactor payment service     # Refactor workflow
+/spec investigate performance      # Research workflow
+```
+
+**Unified Workflow:**
+```
+/spec → creates specification → /kick-off → creates execution plan → /execute
+```
+
+| Work Type | Detection | Focus |
+|-----------|-----------|-------|
+| **Bug** | "fix", "bug", "error" | Root cause + fix requirements |
+| **Feature** | Default | User stories + acceptance criteria |
+| **Refactor** | "refactor", "reorganize" | Current/target state + compatibility |
+| **Research** | "investigate", "research" | Questions + findings structure |
+
+**Output Structure:**
+```markdown
+# [Work Title] - Specification
+
+## 1. Requirements ✓
+[EARS notation: WHEN [condition] THE SYSTEM SHALL [behavior]]
+
+## 2. Analysis ✓
+[Work-type specific analysis]
+
+## 3. Scope ✓
+[In/out, complexity, dependencies]
+
+## 4. Success Criteria ✓
+[Definition of done, testable outcomes]
+
+---
+**Status**: Ready for /kick-off
+```
 
 **`/setup` features:**
 - Smart mode auto-detects if project needs init or refresh
@@ -191,14 +234,14 @@ Standards discovery, spec planning, and product documentation for AI-assisted de
 |-------|---------|
 | `/standards-inject` | Inject relevant standards into AI context |
 | `/standards-index` | Build/update project standards index |
-| `@spec-review` | Review methodology for implementation plans |
+| `@spec-review` | Review methodology for specifications |
 | `@standards-review` | Review methodology for discovered standards |
 
 **Agents:**
 
 | Agent | Purpose |
 |-------|---------|
-| `spec-reviewer` | Reviews implementation plans for completeness and coherence |
+| `spec-reviewer` | Reviews specifications for requirements quality and readiness |
 | `standards-reviewer` | Validates discovered standards for accuracy and usefulness |
 
 **Profiles:**
@@ -213,7 +256,12 @@ Standards discovery, spec planning, and product documentation for AI-assisted de
 ├── standards/
 │   ├── baseline/      # Profile-managed (via /standards init & update)
 │   └── project/       # User-managed (via /standards discover)
-├── specs/             # Feature specs and implementation plans
+├── specs/             # Specifications with requirements.md
+│   └── {YYYY-MM-DD-HHMM-slug}/
+│       ├── requirements.md    # EARS notation requirements
+│       ├── spec.md           # Full specification
+│       ├── standards.md      # Applicable standards
+│       └── references.md     # Code references
 └── product/           # Product documentation
 ```
 
