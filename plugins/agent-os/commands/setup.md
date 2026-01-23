@@ -158,7 +158,7 @@ Agent-os structure created.
 Next: Let's establish your product documentation.
 ```
 
-Delegate to `@plan-product` to create:
+Delegate to `/plan-product` to create:
 - `.agent-os/product/mission.md`
 - `.agent-os/product/roadmap.md`
 - `.agent-os/product/tech-stack.md`
@@ -171,14 +171,14 @@ After product planning completes:
 Product docs created. Now let's set up standards.
 ```
 
-If profile was selected → delegate to `@standards-init`
+If profile was selected → delegate to `/standards init`
 If no profile → show manual setup instructions:
 
 ```
 No profile selected. To add standards manually:
 
 1. Create standards in .agent-os/standards/project/
-2. Use /standards-discover to extract patterns from code
+2. Use /standards discover to extract patterns from code
 3. Use /standards-inject to apply them to conversations
 ```
 
@@ -307,10 +307,10 @@ For each selected action:
 
 | Action | Delegation |
 |--------|------------|
-| Update product docs | `@plan-product` (update mode) |
+| Update product docs | `/plan-product` (update mode) |
 | Sync tech-stack | Direct edit with user confirmation |
-| Update baseline | `@standards-update` |
-| Discover standards | `@standards-discover` |
+| Update baseline | `/standards update` |
+| Discover standards | `/standards discover` |
 
 ### Step 4: Confirm Changes
 
@@ -364,10 +364,10 @@ Run /setup refresh to apply updates.
 
 | Subcommand | Delegates To |
 |------------|--------------|
-| Product docs creation | `@plan-product` |
-| Standards init | `@standards-init` |
-| Standards update | `@standards-update` |
-| Standards discovery | `@standards-discover` |
+| Product docs creation | `/plan-product` |
+| Standards init | `/standards init` |
+| Standards update | `/standards update` |
+| Standards discovery | `/standards discover` |
 
 ## Directory Structure Created
 
@@ -391,4 +391,4 @@ Run /setup refresh to apply updates.
 - Run `/setup` on any new project to bootstrap agent-os quickly
 - Run `/setup refresh` periodically to catch drift
 - Run `/setup audit` before major releases to check documentation health
-- The setup skill is non-destructive — it always asks before overwriting
+- The setup command is non-destructive — it always asks before overwriting
