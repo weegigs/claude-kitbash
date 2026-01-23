@@ -2,6 +2,19 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
+## [1.6.0] - 2026-01-23
+
+### agent-os v1.3.0
+- Refactored `/spec` as universal work preparation command with progressive disclosure
+- Added work-type detection: bug, feature, refactor, research
+- Added work-type specific sub-skills: `@spec-bug`, `@spec-feature`, `@spec-refactor`, `@spec-research`
+- Implemented EARS notation for requirements (kiro.dev methodology)
+- Updated `@spec-review` to validate new specification structure with test compliance mapping
+- Spec output now ready for `/kick-off` execution planning phase
+
+### Documentation
+- Updated README with v1.3.0 /spec workflow documentation
+
 ## [1.5.0] - 2026-01-23
 
 ### agent-os v1.2.0
