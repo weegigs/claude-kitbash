@@ -159,20 +159,31 @@ Skills for [Convex](https://convex.dev) backend development (adapted for Bun run
 | `@convex-storage` | File uploads, serving files, storage patterns |
 | `@convex-scheduling` | Cron jobs, scheduled functions |
 
-### agent-os Plugin (v1.1.0)
+### agent-os Plugin (v1.2.0)
 
 Standards discovery, spec planning, and product documentation for AI-assisted development.
 
-**Main Command:**
+**Main Commands:**
 
 | Command | Purpose |
 |---------|---------|
+| `/setup` | Initialize or refresh agent-os configuration (auto-detects mode) |
+| `/setup init` | Force initialization flow |
+| `/setup refresh` | Force refresh flow (detect drift) |
+| `/setup audit` | Report-only, no changes |
 | `/standards` | One-shot standards management (auto-detects state, offers actions) |
 | `/standards init` | Initialize baseline from a profile |
 | `/standards update` | Update baseline to latest profile version |
 | `/standards discover` | Discover project-specific standards |
 | `/spec` | Shape and plan significant work with optional review |
 | `/plan-product` | Create product documentation structure |
+
+**`/setup` features:**
+- Smart mode auto-detects if project needs init or refresh
+- Init flow: audits existing docs, detects stack, suggests profile
+- Refresh flow: detects drift (README changes, new dependencies, baseline updates)
+- Audit mode: report-only drift detection without making changes
+- Integrates with `/plan-product` and `/standards` for complete setup
 
 **Supporting Skills:**
 

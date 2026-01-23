@@ -2,6 +2,22 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
+## [1.5.0] - 2026-01-23
+
+### agent-os v1.2.0
+- Added `/setup` skill for project initialization and refresh workflows
+- Smart mode auto-detects if project needs init or refresh
+- Init flow: audits existing docs, detects stack, suggests profile, hands off to `/plan-product` and `/standards`
+- Refresh flow: detects drift (README changes, new dependencies, baseline updates, undocumented patterns)
+- Audit mode for report-only drift detection without making changes
+
+### Infrastructure
+- Added `/release` skill for marketplace release management
+- Release skill identifies changes, suggests version bumps, updates changelog and version files
+
+### Documentation
+- Updated README with /setup documentation
+
 ## [1.4.0] - 2026-01-23
 
 ### workflow v1.4.0
