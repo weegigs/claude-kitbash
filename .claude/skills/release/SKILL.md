@@ -92,14 +92,22 @@ If "edit" → allow user to override version numbers.
 
 ### Step 5: Update Version Files
 
-For each plugin being bumped:
+Update ALL version files for consistency:
 
-```bash
-# Update plugin.json
-# File: plugins/{plugin}/.claude-plugin/plugin.json
-```
+1. **Marketplace file** (source of truth):
+   ```bash
+   # File: .claude-plugin/marketplace.json
+   # Update top-level "version" for marketplace version
+   # Update plugins[].version for each changed plugin
+   ```
 
-Edit the version field in each changed plugin's `plugin.json`.
+2. **Individual plugin files**:
+   ```bash
+   # File: plugins/{plugin}/.claude-plugin/plugin.json
+   # Update "version" field to match marketplace.json
+   ```
+
+Both files must be updated to maintain consistency.
 
 ### Step 6: Update CHANGELOG.md
 
@@ -201,14 +209,22 @@ Use for manual version control when automated analysis isn't needed.
 
 | File | Field |
 |------|-------|
+| `.claude-plugin/marketplace.json` | `version` (marketplace) and plugin `version` entries |
 | `plugins/{name}/.claude-plugin/plugin.json` | `version` |
 | `CHANGELOG.md` | New section header |
 | `README.md` | Version badges (if any) |
 
+**CRITICAL**: The `.claude-plugin/marketplace.json` file is the source of truth for:
+1. Marketplace version (top-level `version` field)
+2. Plugin versions (in the `plugins` array)
+
+Both must be updated when releasing. The individual `plugins/{name}/.claude-plugin/plugin.json` files should match the versions in `marketplace.json`.
+
 ### Version Sources
 
-- Plugin versions: `plugins/{name}/.claude-plugin/plugin.json`
-- Marketplace version: Top entry in `CHANGELOG.md`
+- Marketplace version: `.claude-plugin/marketplace.json` → `version`
+- Plugin versions: `.claude-plugin/marketplace.json` → `plugins[].version`
+- Plugin versions (backup): `plugins/{name}/.claude-plugin/plugin.json`
 - Release history: `jj log` / `jj tags`
 
 ---
