@@ -1,3 +1,8 @@
+---
+name: verify
+description: Source verification and fact-checking. Use when critical decisions depend on search results, conflicting information appears, or high-stakes technical choices need validation.
+---
+
 # Source Verification
 
 Fact-checking and validation patterns for critical information.

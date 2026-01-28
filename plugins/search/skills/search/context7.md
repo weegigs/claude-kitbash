@@ -1,3 +1,8 @@
+---
+name: context7
+description: Library documentation patterns via Context7 MCP. Use when needing current, version-specific documentation for libraries and frameworks.
+---
+
 # Context7: Library Documentation
 
 Context7 provides up-to-date, version-specific documentation directly from library sources.

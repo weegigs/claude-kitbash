@@ -1,3 +1,8 @@
+---
+name: perplexity
+description: Deep research workflows via Perplexity MCP. Use when research requires synthesis, cited sources, or multi-step reasoning.
+---
+
 # Perplexity: Deep Research
 
 Perplexity provides synthesized answers with citations through multi-step web research.

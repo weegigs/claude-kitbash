@@ -1,3 +1,8 @@
+---
+name: plan
+description: Research planning before execution. Use before starting complex research when scope is unclear, for multi-session research efforts, or research supporting important decisions.
+---
+
 # Research Planning
 
 Structured approach for complex research tasks before execution.

@@ -1,3 +1,8 @@
+---
+name: search
+description: Search and research enhancement skills. Use when performing web searches, looking up library documentation, or conducting research that requires multiple sources.
+---
+
 # Search & Research Skills
 
 Enhance search and research workflows with specialized tools and patterns.

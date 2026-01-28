@@ -1,3 +1,8 @@
+---
+name: deep-research
+description: Multi-step investigation workflow. Use for complex questions requiring synthesis across multiple sources, comparative analysis, or technical deep-dives.
+---
+
 # Deep Research: Multi-Step Investigation
 
 Multi-step research methodology for complex questions requiring synthesis across multiple sources.

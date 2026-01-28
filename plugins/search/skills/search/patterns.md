@@ -1,3 +1,8 @@
+---
+name: patterns
+description: Search patterns and best practices. Reference for query construction, progressive enhancement model, and tool selection hierarchy.
+---
+
 # Search Patterns & Best Practices
 
 General patterns for effective search and research.
