@@ -2,6 +2,18 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
+## [1.11.4] - 2026-01-28
+
+### code-quality v1.5.4
+- Enhanced Codex skill with comprehensive GPT-5.2 documentation
+- Added Model Options table (gpt-5.2, gpt-5.2-max, gpt-5.2-mini, gpt-5.1-thinking)
+- Added Reasoning Effort Levels section (xhigh/high/medium/low)
+- Added Quick Reference table for common use cases
+- Added Resume Session documentation for continuing work
+- Added Error Handling and Following Up sections
+- Updated Options Reference with new flags (--full-auto, --skip-git-repo-check, reasoning effort)
+- Added CLI version requirement note (v0.57.0+)
+
 ## [1.11.3] - 2026-01-28
 
 ### code-quality v1.5.3
