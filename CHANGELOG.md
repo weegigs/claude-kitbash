@@ -2,6 +2,36 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
+## [1.10.0] - 2026-01-28
+
+### code-quality v1.5.0
+- Added `@cop-out-detector` agent for detecting deferred work and workarounds
+- Enhanced `@reviewer` agent with mandatory cop-out pattern checklist
+- Added Stop hook to verify genuine completion before allowing "done"
+- Added SubagentStop hook to catch incomplete subagent work
+- Cop-out patterns: TODO/FIXME, lint suppressions, type bypasses, empty catches, skipped tests
+
+### workflow v1.6.0
+- Added cop-out scan section to `/check` skill with grep commands
+- Enhanced `/execute` skill with "Hard-Nosed Perfectionist" mindset
+- Added discovered work protocol: STOP → ASSESS → ASK → WAIT → ACT
+- Enforces: tracked deferrals require explicit user approval, not just beads reference
+
+### search v1.1.1
+- Added YAML frontmatter with name+description to all skill files
+- No functional changes, metadata compliance fix
+
+## [1.9.0] - 2026-01-28
+
+### search v1.1.0
+- Added `/deep-research` skill for multi-step investigation workflows
+- Added `/verify` skill for source verification and fact-checking
+- Added `/plan` skill for research planning before execution
+- Added `@patterns` sub-skill documenting search hierarchy and best practices
+- Added `@context7` sub-skill for library documentation via MCP
+- Added `@perplexity` sub-skill for deep research with citations
+- Progressive disclosure: main skill → sub-skills for detailed guidance
+
 ## [1.8.0] - 2026-01-28
 
 ### mise v1.0.0 (NEW PLUGIN)

@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "kitbash",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Claude Code plugins for workflows, version control, issue tracking, and code quality",
   "owner": {
     "name": "Wee Gigs Pty Ltd",
@@ -33,7 +33,7 @@
     {
       "name": "workflow",
       "description": "Workflow skills for beads+jj projects",
-      "version": "1.5.0",
+      "version": "1.6.0",
       "author": {
         "name": "Wee Gigs",
         "email": "kevin+claude@weegigs.com"
@@ -44,7 +44,7 @@
     {
       "name": "code-quality",
       "description": "Code quality agents, language skills, Codex reviews, and design principles",
-      "version": "1.4.0",
+      "version": "1.5.0",
       "author": {
         "name": "Wee Gigs",
         "email": "kevin+claude@weegigs.com"
@@ -88,7 +88,7 @@
     {
       "name": "search",
       "description": "Search and research enhancement skills with progressive escalation and date validation",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": {
         "name": "Wee Gigs",
         "email": "kevin+claude@weegigs.com"
