@@ -5,25 +5,44 @@ description: Language-specific code cleaning patterns. Use alongside the code-cl
 
 # Code Cleaning Skills
 
-Language and framework-specific patterns for writing clean, idiomatic code.
+Language and framework-specific patterns for writing clean, idiomatic code. **Load the appropriate skill BEFORE working on code in that language.**
 
 ## Available Skills
 
-| Skill | Use When |
-|-------|----------|
-| `typescript` | Pure functional TypeScript - discriminated unions, branded types, composition |
-| `rust` | Rust idioms - ownership, error handling, trait patterns |
-| `tokio` | Async Rust - spawning, channels, structured concurrency |
-| `svelte` | Svelte 5 runes + SvelteKit 2 - reactivity, load functions, form actions |
+| Skill | Extension | Use When |
+|-------|-----------|----------|
+| `@typescript` | `.ts`, `.tsx` | Pure functional TypeScript - discriminated unions, branded types, composition |
+| `@rust` | `.rs` | Rust idioms - ownership, Option combinators, error handling, trait patterns |
+| `@tokio` | `.rs` + async | Async Rust - spawning, channels, structured concurrency |
+| `@svelte` | `.svelte` | Svelte 5 runes + SvelteKit 2 - reactivity, load functions, form actions |
+
+## Auto-Detection
+
+Detect language from file extensions and load skills:
+
+```
+.rs          → @rust (+ @tokio if async)
+.ts, .tsx    → @typescript
+.svelte      → @svelte + @typescript
+```
 
 ## Usage
 
 ### With code-cleaner agent
 
-The agent automatically identifies the language and applies relevant skills:
+The agent identifies the language and loads relevant skills automatically:
 
 ```
 @code-cleaner Review the changes in src/
+```
+
+### With code review
+
+Load language skills to enhance review depth:
+
+```
+/codex-review  # Reviews against principles
+@rust          # Load Rust idioms for deeper review
 ```
 
 ### Standalone
@@ -34,10 +53,12 @@ Reference skills directly for language-specific guidance:
 How should I structure this TypeScript module? @typescript
 ```
 
-## Skill Selection
+## Skill Layering
 
-When cleaning code, identify:
+When cleaning code, load in order:
 
-1. **Primary language** → Load base skill (typescript, rust)
-2. **Framework/runtime** → Load additional skill (tokio, svelte)
-3. **Apply in order** → Language basics first, then framework patterns
+1. **Quality principles** (`@principles`) — Universal design rules
+2. **Language skill** (`@rust`, `@typescript`) — Language-specific idioms
+3. **Framework skill** (`@tokio`, `@svelte`) — Runtime-specific patterns
+
+Each layer adds more specific patterns on top of general principles.

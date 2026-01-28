@@ -97,18 +97,38 @@ Avoid over-cleaning that could:
 
 ## Language-Specific Skills
 
-When cleaning code, identify the language and apply the appropriate skill:
+**IMPORTANT: Load the appropriate language skill BEFORE cleaning code.**
 
 | Language/Framework | Skill | Focus |
 |-------------------|-------|-------|
 | TypeScript | `@typescript` | Discriminated unions, branded types, Result/Option, composition |
-| Rust | `@rust` | Ownership, borrowing, error handling, trait patterns |
+| Rust | `@rust` | Ownership, borrowing, Option combinators, error handling, trait patterns |
 | Rust + Tokio | `@tokio` | Async patterns, channels, select!, graceful shutdown |
 | Svelte 5 / SvelteKit | `@svelte` | Runes ($state, $derived, $effect), load functions, form actions |
 
-### Skill Selection Process
+### Skill Injection Process
 
-1. **Identify primary language** from file extension and content
-2. **Detect framework/runtime** (Tokio for async Rust, SvelteKit for .svelte files)
-3. **Load relevant skills** - language first, then framework
-4. **Apply idioms** - language-specific patterns on top of macro principles
+1. **Identify primary language** from file extension:
+   - `.rs` → Load `@rust`
+   - `.ts`, `.tsx` → Load `@typescript`
+   - `.svelte` → Load `@svelte` and `@typescript`
+
+2. **Detect framework/runtime** from imports and patterns:
+   - `use tokio::` → Also load `@tokio`
+   - SvelteKit routes → Ensure `@svelte` covers load functions
+
+3. **Load skills immediately** — Read the skill content into context BEFORE analyzing code
+
+4. **Apply in layers**:
+   - Quality principles (`@principles`) — universal design rules
+   - Language idioms (`@rust`, `@typescript`) — language-specific patterns
+   - Framework patterns (`@tokio`, `@svelte`) — runtime-specific best practices
+
+### Why This Matters
+
+Language skills contain idioms that go beyond general principles. For example:
+- **Rust**: Flatten nested `if let` with `and_then` + `?` in closures
+- **TypeScript**: Use discriminated unions instead of type guards
+- **Svelte**: Prefer `$derived` over `$effect` for computed values
+
+Without loading the language skill, these patterns won't be caught.

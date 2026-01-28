@@ -1,6 +1,6 @@
 ---
 name: principles
-description: Core code quality principles. Reference from code reviews, cleaning agents, and workflow checks.
+description: Core code quality principles for writing maintainable code. Use when reviewing code for design violations, assessing code quality, or applying architectural patterns like composition, immutability, and fail-fast.
 ---
 
 # Code Quality Principles

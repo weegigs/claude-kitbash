@@ -1,7 +1,7 @@
 {
   "name": "code-quality",
-  "version": "1.2.0",
-  "description": "Code quality agents, principles, and review commands",
+  "version": "1.4.0",
+  "description": "Code quality agents, principles, language skills, and review commands",
   "author": {
     "name": "Wee Gigs",
     "email": "kevin+claude@weegigs.com"

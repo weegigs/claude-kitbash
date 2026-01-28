@@ -7,7 +7,38 @@ description: Core Rust idioms - ownership, newtype, error handling, trait patter
 
 Idiomatic Rust patterns. Clippy-clean, no unwrap in production. Updated for Rust 2024 edition.
 
-## Imperative Shell, Functional Core
+## Table of Contents
+
+1. [Architecture](#architecture)
+   - [Imperative Shell, Functional Core](#imperative-shell-functional-core)
+   - [Make Invalid States Unrepresentable](#make-invalid-states-unrepresentable)
+   - [Single Responsibility Principle](#single-responsibility-principle)
+2. [Type System](#type-system)
+   - [Strong Domain Data Types (Newtype Pattern)](#strong-domain-data-types-newtype-pattern)
+   - [Strong Domain Error Types](#strong-domain-error-types)
+3. [Control Flow](#control-flow)
+   - [Let Chains](#let-chains-rust-180-stable)
+   - [Option Combinators: Flatten Nested if-let](#option-combinators-flatten-nested-if-let)
+   - [Error Propagation with ?](#error-propagation-with-)
+4. [Collections & Iteration](#collections--iteration)
+   - [Iterator Patterns](#iterator-patterns)
+5. [Memory & Ownership](#memory--ownership)
+   - [Ownership and Borrowing](#ownership-and-borrowing)
+6. [API Design](#api-design)
+   - [Builder Pattern](#builder-pattern)
+   - [Trait Design](#trait-design)
+   - [Derive Wisely](#derive-wisely)
+7. [Quality](#quality)
+   - [Clippy Compliance](#clippy-compliance)
+8. [Testing](#testing)
+   - [Property-Based Testing](#property-based-testing)
+   - [Snapshot Testing](#snapshot-testing)
+
+---
+
+## Architecture
+
+### Imperative Shell, Functional Core
 
 **The most important architectural pattern.** Separate your code into two layers:
 
@@ -99,7 +130,7 @@ async fn process_order(
 
 **Apply when you see**: `async fn` mixing business logic with `.await` calls, functions that require mocking to test.
 
-## Make Invalid States Unrepresentable
+### Make Invalid States Unrepresentable
 
 Use enums and the type system to make illegal states impossible to construct.
 
@@ -141,7 +172,7 @@ struct Order {
 
 **Apply when you see**: boolean flags, `Option` fields that are conditionally required, string-typed status fields.
 
-## Single Responsibility Principle
+### Single Responsibility Principle
 
 Each function, struct, and module should have exactly one reason to change.
 
@@ -182,7 +213,11 @@ async fn process_order(order_id: OrderId) -> Result<(), ProcessError> {
 
 **Apply when you see**: functions with multiple `await` points doing unrelated work, structs mixing data with behavior.
 
-## Strong Domain Data Types (Newtype Pattern)
+---
+
+## Type System
+
+### Strong Domain Data Types (Newtype Pattern)
 
 Wrap primitives in newtypes to prevent mixing up domain concepts.
 
@@ -258,7 +293,7 @@ pub struct Timestamp(i64);  // Unix epoch millis
 
 **Apply when you see**: functions taking multiple String/i64 parameters, IDs passed as plain strings, domain concepts as primitives.
 
-## Strong Domain Error Types
+### Strong Domain Error Types
 
 Use domain-specific error enums that callers can match on exhaustively.
 
@@ -342,7 +377,11 @@ pub enum PaymentError {
 
 **Apply when you see**: `Box<dyn Error>`, string error messages, error handling that parses messages.
 
-## Let Chains (Rust 1.80+ - STABLE)
+---
+
+## Control Flow
+
+### Let Chains (Rust 1.80+ - STABLE)
 
 Combine multiple conditions without deep nesting.
 
@@ -385,7 +424,82 @@ fn process_user_legacy(maybe_user: Option<User>) -> Result<String, Error> {
 }
 ```
 
-## Iterator Patterns
+### Option Combinators: Flatten Nested if-let
+
+Use `and_then` and `?` in closures to avoid the "Pyramid of Doom" when chaining Option operations.
+
+```rust
+// ❌ BAD: "Pyramid of Doom" - deep nesting obscures the logic
+if let Some(desc) = &upgrade.description {
+    if let Some(start) = desc.find('(') {
+        if let Some(end) = desc.rfind(')') {
+            if start < end {
+                let rule = desc[start + 1..end].to_string();
+                *counts.entry(rule).or_insert(0) += 1;
+            }
+        }
+    }
+}
+
+// ✅ GOOD: Flat structure with combinators
+let rule = upgrade.description.as_ref().and_then(|desc| {
+    let start = desc.find('(')?;
+    let end = desc.rfind(')')?;
+    (start < end).then(|| desc[start + 1..end].to_string())
+});
+if let Some(rule) = rule {
+    *counts.entry(rule).or_insert(0) += 1;
+}
+```
+
+**Why the combinator version is better**:
+- Flat structure—logic flows linearly instead of rightward
+- `?` operator handles `None` cases implicitly inside the closure
+- `bool.then(|| value)` converts a condition to `Option`
+- Computation separated from action (extract rule, then use it)
+
+**Key techniques**:
+
+| Technique | Purpose | Example |
+|-----------|---------|---------|
+| `and_then` | Chain operations returning `Option` | `opt.and_then(\|x\| x.parse().ok())` |
+| `?` in closures | Early return `None` if any step fails | `\|x\| { let y = x.get()?; Some(y) }` |
+| `bool.then(\|\| v)` | Convert condition to `Option` | `(x > 0).then(\|\| x * 2)` |
+| `bool.then_some(v)` | Same, but value is eagerly evaluated | `valid.then_some(result)` |
+
+**When to refactor**: 3+ nested `if let Some(...)` or nested conditions with `if x { if y { if z { ... } } }` where the actual operation is buried 4+ indentation levels deep.
+
+**Contrast with let chains**: Let chains (`if let X && let Y && condition { ... }`) are better when you need branching logic with an else clause. Combinators are better when you're extracting/transforming a value through a pipeline.
+
+### Error Propagation with ?
+
+```rust
+// ❌ Verbose match chains
+fn read_config(path: &Path) -> Result<Config, Error> {
+    let content = match std::fs::read_to_string(path) {
+        Ok(c) => c,
+        Err(e) => return Err(e.into()),
+    };
+    let config = match toml::from_str(&content) {
+        Ok(c) => c,
+        Err(e) => return Err(e.into()),
+    };
+    Ok(config)
+}
+
+// ✅ Clean with ?
+fn read_config(path: &Path) -> Result<Config, Error> {
+    let content = std::fs::read_to_string(path)?;
+    let config = toml::from_str(&content)?;
+    Ok(config)
+}
+```
+
+---
+
+## Collections & Iteration
+
+### Iterator Patterns
 
 Lazy composition compiles to efficient loops.
 
@@ -423,7 +537,11 @@ let (active, inactive): (Vec<_>, Vec<_>) = users
     .partition(|u| u.is_active());
 ```
 
-## Ownership and Borrowing
+---
+
+## Memory & Ownership
+
+### Ownership and Borrowing
 
 ```rust
 // ❌ Unnecessary clone
@@ -448,31 +566,11 @@ fn format_name(name: &str) -> String {
 }
 ```
 
-## Error Propagation with ?
+---
 
-```rust
-// ❌ Verbose match chains
-fn read_config(path: &Path) -> Result<Config, Error> {
-    let content = match std::fs::read_to_string(path) {
-        Ok(c) => c,
-        Err(e) => return Err(e.into()),
-    };
-    let config = match toml::from_str(&content) {
-        Ok(c) => c,
-        Err(e) => return Err(e.into()),
-    };
-    Ok(config)
-}
+## API Design
 
-// ✅ Clean with ?
-fn read_config(path: &Path) -> Result<Config, Error> {
-    let content = std::fs::read_to_string(path)?;
-    let config = toml::from_str(&content)?;
-    Ok(config)
-}
-```
-
-## Builder Pattern
+### Builder Pattern
 
 For structs with many optional fields.
 
@@ -522,7 +620,7 @@ let request = RequestBuilder::new()
     .build()?;
 ```
 
-## Trait Design
+### Trait Design
 
 ```rust
 // ❌ Concrete types in signatures
@@ -545,7 +643,7 @@ trait Repository {
 }
 ```
 
-## Derive Wisely
+### Derive Wisely
 
 ```rust
 // Value types - equality, hashing, cloning
@@ -570,7 +668,11 @@ pub struct Config {
 }
 ```
 
-## Clippy Compliance
+---
+
+## Quality
+
+### Clippy Compliance
 
 ```rust
 #![warn(clippy::pedantic)]
@@ -585,7 +687,11 @@ pub struct Config {
 // - Use `unwrap_or_default()` for Default types
 ```
 
-## Property-Based Testing
+---
+
+## Testing
+
+### Property-Based Testing
 
 **Prefer property-based tests over static unit tests.** Static tests check specific examples; property-based tests verify invariants hold across thousands of generated inputs.
 
@@ -687,7 +793,7 @@ fn user_strategy() -> impl Strategy<Value = User> {
 
 **Apply when you see**: lots of hand-written example-based tests, test files longer than implementation files.
 
-## Snapshot Testing
+### Snapshot Testing
 
 **Use `insta` snapshots to catch unintended changes to data structures.** Snapshots are particularly valuable for:
 - Complex struct transformations

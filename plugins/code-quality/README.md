@@ -1,6 +1,6 @@
 # Code Quality Plugin
 
-Code quality agents and language-specific cleaning skills for writing clean, idiomatic, testable code.
+Code quality agents, skills, and Codex-powered reviews for writing clean, idiomatic, testable code.
 
 ## Core Philosophy
 
@@ -34,33 +34,86 @@ Libraries: `vitest` (TypeScript), `insta` (Rust)
 
 ## Components
 
-### Agent: cleaner
+### Agents
 
-Expert code cleaner. Loads `@cleaner` skill for methodology and `@principles` for design standards.
+All agents automatically detect language from target files and load appropriate skills before working.
+
+| Agent | Purpose | Auto-loads |
+|-------|---------|------------|
+| `@cleaner` | Clean up code for clarity and maintainability | `@cleaner`, `@principles`, language skill |
+| `@implementer` | Implement finite-scope tasks with quality standards | `@principles`, language skill |
+| `@addresser` | Fix issues identified by reviewers | `@principles`, language skill |
+| `@reviewer` | Review code with language-aware pattern checking | `@principles`, language skill |
 
 ```
 @cleaner Review the changes in src/
+@implementer Implement the user validation function
+@reviewer Review the changes in src/lib.rs
 ```
 
-### Command: codex-review
+### Skills
 
-Request independent code review from Codex. Loads `@codex-review` skill for process.
+| Skill | Purpose |
+|-------|---------|
+| `@codex` | Neutral Codex CLI base—jj-native patterns, output handling |
+| `@codex-review` | Code review via Codex with multi-agent support |
+| `@codex-spec-review` | Spec review via Codex with multi-agent support |
+| `@cleaner` | Code cleaning methodology |
+| `@coding-context` | Detect languages and inject appropriate skills before implementation |
+| `@principles` | 12 design principles with Rust/TypeScript examples |
+| `@cleaning` | Language-specific patterns (TypeScript, Rust, Tokio, Svelte) |
 
+### Coding Context (`/coding-context`)
+
+Detect languages in target files and inject appropriate skills before implementing code:
+
+```bash
+/coding-context                    # Auto-detect from task context
+/coding-context src/lib.rs         # Explicit file(s)
+/coding-context src/components/    # Explicit directory
 ```
-/codex-review
+
+Automatically loads:
+- Language skills (`@rust`, `@typescript`, `@svelte`)
+- Framework skills (`@tokio` for async Rust)
+- `@principles` for universal quality standards
+
+### SessionStart Hook
+
+On session start, the plugin automatically:
+1. Scans the codebase for language composition
+2. Reports detected languages and corresponding skills
+3. Provides guidance on when to load skills
+
+### Codex Review (`/codex-review`)
+
+Independent code review using Codex CLI. Supports multi-agent review for complex changes:
+
+| Complexity | Agents | Focus Areas |
+|------------|--------|-------------|
+| Simple (< 100 lines) | 1 | All principles |
+| Medium (100-500 lines) | 2 | Design + Standards |
+| Complex (> 500 lines) | 3 | Design + Safety + Quality |
+
+```bash
+/codex-review              # Review working copy
 ```
 
-### Skills: cleaner
+### Codex Spec Review (`/codex-spec-review`)
 
-Code cleaning methodology—process for enhancing clarity, consistency, and maintainability.
+Independent spec review using Codex CLI. Validates specifications before implementation:
 
-### Skills: codex-review
+| Complexity | Agents | Focus Areas |
+|------------|--------|-------------|
+| Simple | 1 | Comprehensive |
+| Medium | 2 | Requirements + Execution |
+| Complex | 3 | Requirements + Risk + Testability |
 
-Independent code review process using Codex and shared quality principles.
+```bash
+/codex-spec-review         # Review spec for readiness
+```
 
-### Skills: principles
-
-Core design principles with do/don't examples in Rust and TypeScript:
+### Principles
 
 | Principle | Description |
 |-----------|-------------|
@@ -77,7 +130,7 @@ Core design principles with do/don't examples in Rust and TypeScript:
 | `@no-stringly-typed` | Unions/enums over magic strings |
 | `@happy-path` | Left-hand side is the happy path (Go style) |
 
-### Skills: cleaning
+### Cleaning Skills
 
 Language-specific patterns loaded automatically by the agent or used standalone:
 
@@ -94,34 +147,30 @@ Language-specific patterns loaded automatically by the agent or used standalone:
 code-quality/
 ├── .claude-plugin/
 │   └── plugin.json
+├── hooks/
+│   ├── hooks.json           # SessionStart hook config
+│   └── session-start.sh     # Language detection on session start
 ├── agents/
-│   └── cleaner.md           # Loads @cleaner and @principles
-├── commands/
-│   └── codex-review.md      # Loads @codex-review and @principles
+│   ├── cleaner.md           # Code cleaning with language detection
+│   ├── implementer.md       # Implementation with quality standards
+│   ├── addresser.md         # Fix review findings
+│   └── reviewer.md          # Review with language-aware checking
 ├── skills/
+│   ├── codex/
+│   │   └── SKILL.md         # Neutral Codex CLI base
+│   ├── codex-review/
+│   │   └── SKILL.md         # Multi-agent code review
+│   ├── codex-spec-review/
+│   │   └── SKILL.md         # Multi-agent spec review
 │   ├── cleaner/
 │   │   └── SKILL.md         # Cleaning methodology
-│   ├── codex-review/
-│   │   └── SKILL.md         # Review process
+│   ├── coding-context/
+│   │   └── SKILL.md         # Language detection and skill injection
 │   ├── principles/
 │   │   ├── SKILL.md         # Index of design principles
-│   │   ├── architecture.md
-│   │   ├── illegal-states.md
-│   │   ├── single-responsibility.md
-│   │   ├── open-closed.md
-│   │   ├── parse-dont-validate.md
-│   │   ├── composition.md
-│   │   ├── explicit-dependencies.md
-│   │   ├── fail-fast.md
-│   │   ├── domain-errors.md
-│   │   ├── immutability.md
-│   │   ├── no-stringly-typed.md
-│   │   └── happy-path.md
+│   │   └── *.md             # Individual principles
 │   └── cleaning/
 │       ├── SKILL.md         # Language skill index
-│       ├── typescript.md
-│       ├── rust.md
-│       ├── tokio.md
-│       └── svelte.md
+│       └── *.md             # Language-specific patterns
 └── README.md
 ```
