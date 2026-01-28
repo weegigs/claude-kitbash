@@ -2,9 +2,9 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
-## [1.11.2] - 2026-01-28
+## [1.11.3] - 2026-01-28
 
-### code-quality v1.5.2
+### code-quality v1.5.3
 - Fixed Stop and SubagentStop hooks response format: `decision: approve|block` (not `ok: true|false`)
 - Removed erroneous `matcher` field from Stop hooks (not required per ralph-loop reference)
 
