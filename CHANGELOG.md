@@ -2,6 +2,11 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
+## [1.11.1] - 2026-01-28
+
+### jj v1.1.0
+- Fixed PreToolUse hook matcher format (string regex, not object)
+
 ## [1.11.0] - 2026-01-28
 
 ### jj v1.1.0
