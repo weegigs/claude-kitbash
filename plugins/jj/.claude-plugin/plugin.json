@@ -1,7 +1,7 @@
 {
   "name": "jj",
-  "version": "1.0.0",
-  "description": "Jujutsu version control skills",
+  "version": "1.1.0",
+  "description": "Jujutsu version control skills with anti-pattern prevention",
   "author": {
     "name": "Wee Gigs",
     "email": "kevin+claude@weegigs.com"

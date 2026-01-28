@@ -2,7 +2,13 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
-## [1.10.1] - 2026-01-28
+## [1.11.0] - 2026-01-28
+
+### jj v1.1.0
+- Added PreToolUse hook to catch common anti-patterns (`jj describe -m` on working copy, `jj split` without fileset)
+- Enhanced skill description for better auto-loading (triggers on "jj", "commit", "release", "version control")
+- Added explicit anti-pattern documentation for `jj describe -m` without `-r`
+- Improved SessionStart hook with CRITICAL section about commit workflow
 
 ### code-quality v1.5.1
 - Fixed Stop and SubagentStop hooks to use correct JSON schema (`ok`/`reason` instead of `decision`/`block`)

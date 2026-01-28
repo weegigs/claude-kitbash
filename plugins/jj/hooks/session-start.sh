@@ -49,17 +49,18 @@ $JJ_REPO_STATUS
 
 ## Key Differences
 - **No staging area** - jj auto-tracks all changes
-- **Working copy** - Always has \`(no description set)\`
-- **Commits** - Use \`jj split -m \"message\" .\` (past tense)
+- **Working copy** - MUST always have \`(no description set)\`
+- **Commits** - Use \`jj split . -m \"message\"\` (past tense)
 - **Diffs** - Use \`--git\` flag for LLM-compatible output
 
-## Common Workflow
+## CRITICAL: Creating Commits
 \`\`\`bash
-jj status              # View changes
-jj diff --git          # See diffs
-jj split -m \"Added feature\" .  # Commit all
-jj split -m \"Fixed bug\" file.rs # Commit specific file
-\`\`\`"
+jj split . -m \"Added feature\"     # Commit all changes
+jj split file.rs -m \"Fixed bug\"   # Commit specific file
+jj bookmark set main -r @-         # Move bookmark after commit
+\`\`\`
+
+**NEVER use \`jj describe -m\` without \`-r <rev>\`** - this sets description on working copy, which violates jj convention. Always use \`jj split . -m\` for commits."
 
 # Add issues if any
 if [ ${#ISSUES[@]} -gt 0 ]; then

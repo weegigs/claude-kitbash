@@ -1,6 +1,6 @@
 ---
 name: jj
-description: Jujutsu (jj) version control. Use when discussing version control, commits, branches, or comparing changes.
+description: Jujutsu (jj) version control. Use when jj is mentioned, or when discussing version control, commits, branches, diffs, releases, or comparing changes. CRITICAL for creating commits, releasing versions, saving work, or any git-like operations in jj repositories.
 ---
 
 # Jujutsu (jj) Version Control
@@ -74,11 +74,14 @@ jj diff --git -r main..@           # All changes since main
 | Wrong | Why | Correct |
 |-------|-----|---------|
 | `git status` | Blocked by hook | `jj status` |
+| `jj describe -m "msg"` | Sets description on working copy (@), violates convention | `jj split . -m "msg"` |
 | `jj split -m "msg"` | Opens interactive editor (fails in agents) | `jj split . -m "msg"` |
 | `jj commit` | Creates empty commit | `jj split . -m "msg"` |
 | `jj new` (for committing) | Wrong mental model | `jj split . -m "msg"` |
 
-**Note:** Use `jj describe -r <rev> -m "msg"` to edit historical commit messages.
+**CRITICAL:** Never use `jj describe -m` without `-r <rev>`. This sets a description on the working copy, which should ALWAYS be `(no description set)`. Use `jj split . -m "msg"` to create commits.
+
+**Note:** Use `jj describe -r <rev> -m "msg"` to edit historical commit messages (not working copy).
 
 ## See Also
 
