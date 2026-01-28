@@ -1,6 +1,6 @@
 {
   "name": "workflow",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Workflow commands for beads+jj projects",
   "author": {
     "name": "Wee Gigs",
