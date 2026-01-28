@@ -8,8 +8,8 @@ Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) ver
 |--------|-------------|----------|
 | `beads@kitbash` | Beads issue tracking | Skills, SessionStart hook |
 | `jj@kitbash` | Jujutsu version control | Skills (jj, jj-workspace, spawn-worker), SessionStart hook |
-| `workflow@kitbash` | Workflow commands | /kick-off, /next, /check |
-| `code-quality@kitbash` | Code quality tools | cleaner agent, codex-review command, principles + cleaning skills |
+| `workflow@kitbash` | Workflow skills | /kick-off, /execute, /next, /check |
+| `code-quality@kitbash` | Code quality tools | cleaner agent, Codex review skills, principles + cleaning skills |
 | `convex@kitbash` | Convex backend development | Skills for functions, schema, storage, scheduling |
 | `agent-os@kitbash` | Standards & specs | Standards discovery, spec planning, product docs |
 
@@ -22,8 +22,8 @@ Shareable Claude Code plugins for **beads** issue tracking, **jj** (Jujutsu) ver
 # Install what you need
 /plugin install beads@kitbash       # Issue tracking
 /plugin install jj@kitbash          # Version control + workspace management
-/plugin install workflow@kitbash    # Workflow commands
-/plugin install code-quality@kitbash # Code cleaning agent
+/plugin install workflow@kitbash    # Workflow skills
+/plugin install code-quality@kitbash # Code cleaning agent + Codex reviews
 /plugin install convex@kitbash      # Convex backend development
 /plugin install agent-os@kitbash    # Standards discovery & spec planning
 ```
@@ -73,6 +73,12 @@ cargo install --locked jj-cli
 
 See: https://martinvonz.github.io/jj/latest/install-and-setup/
 
+### Codex CLI (for code-quality reviews)
+
+```bash
+brew install openai/codex/codex
+```
+
 ## What's Included
 
 ### beads Plugin
@@ -109,10 +115,10 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 
 **SessionStart hook**: Validates `jj` is installed.
 
-### workflow Plugin (v1.4.0)
+### workflow Plugin (v1.5.0)
 
-| Command | Purpose |
-|---------|---------|
+| Skill | Purpose |
+|-------|---------|
 | `/kick-off` | Create execution plan from requirements |
 | `/execute` | Execute plan in ultrawork mode |
 | `/next` | Recommend next task based on beads state |
@@ -131,21 +137,29 @@ Skills for [Jujutsu](https://martinvonz.github.io/jj/) version control:
 - No silent TODOs — every TODO requires user approval → beads task
 - No scope reduction without explicit approval
 
-### code-quality Plugin (v1.2.0)
+### code-quality Plugin (v1.3.0)
 
 | Component | Purpose |
 |-----------|---------|
 | `cleaner` agent | Automated code cleanup using @cleaner and @principles skills |
-| `/codex-review` command | Independent code review via Codex |
+| `/codex-review` | Multi-agent code review via Codex CLI |
+| `/codex-spec-review` | Multi-agent spec review via Codex CLI |
 
 **Skills:**
 
 | Skill | Purpose |
 |-------|---------|
+| `@codex` | Neutral Codex CLI base (jj-native) |
+| `@codex-review` | Code review with multi-agent support |
+| `@codex-spec-review` | Spec review with multi-agent support |
 | `@cleaner` | Code cleaning methodology |
-| `@codex-review` | Codex review process |
 | `@principles` | 12 design principles with Rust/TypeScript examples |
 | `@cleaning` | Language-specific patterns (TypeScript, Rust, Tokio, Svelte) |
+
+**Multi-agent reviews** scale by complexity:
+- Simple: 1 agent (comprehensive)
+- Medium: 2 agents (parallel perspectives)
+- Complex: 3 agents (design + safety + quality)
 
 ### convex Plugin (v1.0.0)
 
@@ -159,14 +173,14 @@ Skills for [Convex](https://convex.dev) backend development (adapted for Bun run
 | `@convex-storage` | File uploads, serving files, storage patterns |
 | `@convex-scheduling` | Cron jobs, scheduled functions |
 
-### agent-os Plugin (v1.3.0)
+### agent-os Plugin (v1.4.0)
 
 Standards discovery, spec planning, and product documentation for AI-assisted development.
 
-**Main Commands:**
+**Main Skills:**
 
-| Command | Purpose |
-|---------|---------|
+| Skill | Purpose |
+|-------|---------|
 | `/setup` | Initialize or refresh agent-os configuration (auto-detects mode) |
 | `/setup init` | Force initialization flow |
 | `/setup refresh` | Force refresh flow (detect drift) |
@@ -178,7 +192,7 @@ Standards discovery, spec planning, and product documentation for AI-assisted de
 | `/spec` | Universal work preparation (features, bugs, refactors, research) |
 | `/plan-product` | Create product documentation structure |
 
-**`/spec` Workflow (v1.3.0):**
+**`/spec` Workflow:**
 
 The `/spec` command prepares any work for execution planning. It detects work type and generates appropriate specifications with EARS-notation requirements.
 

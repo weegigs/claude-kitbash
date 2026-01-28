@@ -2,6 +2,56 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
+## [1.8.0] - 2026-01-28
+
+### mise v1.0.0 (NEW PLUGIN)
+- New plugin for mise development environment management
+- SessionStart hook validates mise installation and shows current tools
+- Skill index with sub-skills: `@exec`, `@run`, `@tools`, `@env`, `@use`
+- Critical pattern: all CLI commands must use `mise exec -- <command>`
+
+### code-quality v1.4.0
+- Added SessionStart hook for automatic language detection
+- Added `/coding-context` skill for on-demand language skill injection
+- Added `@implementer` agent with language-aware quality standards
+- Added `@addresser` agent for fixing review findings with idiom awareness
+- Added `@reviewer` agent with language-specific pattern checking
+- Enhanced `@cleaner` agent with explicit language detection instructions
+- Added Option Combinators section to `@rust` skill (flatten nested if-let)
+- Restructured `@rust` skill with 3-level hierarchy and table of contents
+- Updated `/execute` to inject language skills at start of implementation
+- Language skill auto-injection: `.rs` → `@rust`, `.ts/.tsx` → `@typescript`, `.svelte` → `@svelte`
+
+## [1.7.0] - 2026-01-28
+
+### code-quality v1.3.0
+- Added `@codex` skill as neutral Codex CLI base (jj-native patterns)
+- Added `@codex-review` skill with multi-agent support (scales by complexity: 1-3 agents)
+- Added `@codex-spec-review` skill for independent spec validation via Codex
+- Removed commands/ directory—skills are the clean interface
+- Multi-agent reviews run in parallel for diverse perspectives (design, safety, quality)
+
+### workflow v1.5.0
+- Migrated all commands to skills: `/check`, `/execute`, `/kick-off`, `/next`
+- Removed commands/ directory—skills are the clean interface
+- Updated all skills to be jj-native (no git references)
+- Improved skill descriptions with "Use when" triggers per agentskills.io spec
+- Added cross-references between skills (`@codex-review`, `@principles`, etc.)
+
+### agent-os v1.4.0
+- Standardized file naming: all `skill.md` files renamed to `SKILL.md`
+- Updated 10 skill descriptions with "Use when" trigger conditions
+- Split `/setup` skill into references/ (init-flow, refresh-flow, audit-flow)
+- Split `/plan-product` skill templates into references/
+- Consolidated resolution order documentation into shared reference
+- Extracted writing conciseness guidelines into shared reference
+- Removed redundant `commands/setup.md`—skill already exists
+
+### Documentation
+- Updated code-quality README with new Codex skills and multi-agent patterns
+- Updated main README with workflow skills (not commands) and code-quality v1.3.0
+- All documentation now references skills as the primary interface
+
 ## [1.6.0] - 2026-01-23
 
 ### agent-os v1.3.0

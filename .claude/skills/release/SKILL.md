@@ -1,6 +1,6 @@
 ---
 name: release
-description: Prepare and execute marketplace releases. Identifies changes, suggests version bumps, updates changelog and version files.
+description: Prepare and execute marketplace releases. Use when releasing new versions: identifies changes since last release, suggests semantic version bumps, and updates changelog and version files.
 ---
 
 # Release
