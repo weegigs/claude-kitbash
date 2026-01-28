@@ -1,0 +1,16 @@
+{
+  "description": "Search quality guards - blocks stale year queries",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "WebSearch|mcp__perplexity__perplexity_ask",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/date-guard.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
