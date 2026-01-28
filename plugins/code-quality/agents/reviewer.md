@@ -53,6 +53,32 @@ You are an expert code reviewer. Before reviewing, load the appropriate language
 - Magic strings instead of enums?
 - Missing branded types for IDs?
 
+### Cop-Out Patterns (MANDATORY)
+
+These are non-negotiable blockers. Every item must pass or work is incomplete.
+
+- [ ] **No unapproved TODO/FIXME** — Every TODO needs BOTH:
+  1. Explicit user approval in conversation ("yes, defer that")
+  2. Tracking reference (beads task ID)
+  - A beads reference alone is NOT sufficient
+- [ ] **No lint suppressions** without explicit user discussion
+  - `#[allow(...)]`, `eslint-disable`, `@ts-ignore`, `noqa`
+  - If lint complains, fix the code, don't suppress the lint
+- [ ] **No type bypasses**
+  - `as any`, `as unknown as`, unchecked type assertions
+  - Fix the types properly
+- [ ] **No empty catch blocks**
+  - `catch {}`, `catch (_) {}`
+  - Handle errors or propagate them
+- [ ] **No skipped tests**
+  - `.skip`, `#[ignore]`, `@pytest.mark.skip`
+  - Tests exist to run — fix or remove them
+- [ ] **No scope reduction without approval**
+  - "out of scope", "beyond the scope", "for now"
+  - Agent cannot unilaterally reduce scope
+
+**If ANY cop-out pattern is found**: Verdict is HAS_ISSUES regardless of other review findings.
+
 ## Output Format
 
 ```
