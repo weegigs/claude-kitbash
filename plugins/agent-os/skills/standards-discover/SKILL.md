@@ -200,12 +200,6 @@ Project index file: `.agent-os/standards/project/index.yml`
 
 Note: Discovered standards go to `project/`, not `baseline/`. The baseline is managed by `/standards init` and `/standards update`.
 
-## Writing Concise Standards
+## Writing Standards
 
-Standards will be injected into AI context windows. Every word costs tokens:
-
-- **Lead with the rule** — State what to do first, explain why second (if needed)
-- **Use code examples** — Show, don't tell
-- **Skip the obvious** — Don't document what the code already makes clear
-- **One standard per concept** — Don't combine unrelated patterns
-- **Bullet points over paragraphs** — Scannable beats readable
+See [../standards/references/writing-concise.md](../standards/references/writing-concise.md) for guidelines on writing effective, concise standards.

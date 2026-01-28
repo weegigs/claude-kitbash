@@ -1,6 +1,6 @@
 ---
 name: spec-feature
-description: Feature specification workflow. Generates user stories with EARS acceptance criteria.
+description: Feature specification workflow. Use when specifying new features to generate user stories with EARS acceptance criteria.
 ---
 
 # Feature Specification Workflow

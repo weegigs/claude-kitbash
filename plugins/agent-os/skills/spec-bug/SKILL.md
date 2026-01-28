@@ -1,6 +1,6 @@
 ---
 name: spec-bug
-description: Bug fix specification workflow. Generates root cause analysis and fix requirements.
+description: Bug fix specification workflow. Use when specifying bug fixes to generate root cause analysis and acceptance criteria.
 ---
 
 # Bug Specification Workflow

@@ -1,6 +1,6 @@
 ---
 name: spec-review
-description: Review methodology for specifications. Used by spec-reviewer agent and Codex.
+description: Review specifications for completeness and execution readiness. Use when validating specs from /spec before implementation begins.
 ---
 
 # Spec Review

@@ -1,6 +1,6 @@
 ---
 name: standards-review
-description: Review methodology for discovered standards. Used by standards-reviewer agent and Codex.
+description: Validate discovered standards for accuracy, clarity, and usefulness. Use when reviewing standards from /standards-discover before committing them to the project.
 ---
 
 # Standards Review
@@ -42,6 +42,8 @@ Check that:
 - [ ] Every word earns its place
 - [ ] No redundant explanations
 - [ ] Bullet points over paragraphs
+
+See [../standards/references/writing-concise.md](../standards/references/writing-concise.md) for detailed conciseness guidelines.
 
 **Red flags:**
 - Paragraphs where bullets would work

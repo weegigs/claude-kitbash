@@ -1,6 +1,6 @@
 ---
 name: spec-refactor
-description: Refactor specification workflow. Documents current state, target state, and compatibility requirements.
+description: Refactor specification workflow. Use when planning refactoring work to document current state, target state, and compatibility requirements.
 ---
 
 # Refactor Specification Workflow

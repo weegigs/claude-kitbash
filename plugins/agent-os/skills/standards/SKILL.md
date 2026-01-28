@@ -121,8 +121,4 @@ To update baseline: /standards update
 
 ## Resolution Order
 
-When injecting standards:
-1. Check `project/{path}` — if exists, use it
-2. Fall back to `baseline/{path}`
-
-Project files shadow baseline files at the same path.
+See [references/resolution-order.md](references/resolution-order.md) for how project and baseline standards are resolved.

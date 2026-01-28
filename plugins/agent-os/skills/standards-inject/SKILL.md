@@ -25,27 +25,7 @@ Directly injects specified standards without suggestions.
 
 ## Resolution Order
 
-Standards are resolved in this order:
-1. Check `.agent-os/standards/project/{path}` — if exists, use it
-2. Fall back to `.agent-os/standards/baseline/{path}`
-
-Project files shadow baseline files at the same path. This allows projects to override profile defaults.
-
-## @baseline Reference
-
-Project standards can reference baseline content:
-
-```markdown
-# Error Handling (Project Override)
-
-@baseline(rust/error-handling)
-
-## Project Additions
-
-Our additional error variants...
-```
-
-When injecting, expand `@baseline(path)` by reading the baseline file.
+See [../standards/references/resolution-order.md](../standards/references/resolution-order.md) for how standards are resolved (project > baseline) and how to use `@baseline` references.
 
 ## Process
 

@@ -1,6 +1,6 @@
 ---
 name: spec-research
-description: Research specification workflow. Structures investigation questions and findings format.
+description: Research specification workflow. Use when planning investigation work to structure research questions and findings format.
 ---
 
 # Research Specification Workflow

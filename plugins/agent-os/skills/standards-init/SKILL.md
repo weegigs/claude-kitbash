@@ -1,6 +1,6 @@
 ---
 name: standards-init
-description: Initialize standards baseline from a profile. Copies profile standards to .agent-os/standards/baseline/
+description: Initialize project standards baseline from a profile. Use when setting up a new project with predefined coding standards and conventions.
 ---
 
 # Standards Init
