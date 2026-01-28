@@ -2,6 +2,12 @@
 
 All notable changes to Claude Kitbash are documented in this file.
 
+## [1.10.1] - 2026-01-28
+
+### code-quality v1.5.1
+- Fixed Stop and SubagentStop hooks to use correct JSON schema (`ok`/`reason` instead of `decision`/`block`)
+- Prompt-type hooks require `{"ok": true}` or `{"ok": false, "reason": "..."}` per Claude Code docs
+
 ## [1.10.0] - 2026-01-28
 
 ### code-quality v1.5.0
