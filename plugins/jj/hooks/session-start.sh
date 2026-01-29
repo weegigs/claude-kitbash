@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # kitbash-jj session-start.sh
 # Validates jj environment and provides minimal context (skills have the details)
+# Output: JSON for Claude only - nothing visible to user terminal
 
 set -euo pipefail
 
 ISSUES=()
 
-# Check jj CLI
+# Check jj CLI (suppress all output)
 if command -v jj &> /dev/null; then
   JJ_VERSION=$(jj --version 2>/dev/null | head -1 || echo "unknown")
   JJ_STATUS="jj installed ($JJ_VERSION)"
@@ -15,7 +16,7 @@ else
   ISSUES+=("Install jj: https://martinvonz.github.io/jj/latest/install-and-setup/")
 fi
 
-# Check jj repository
+# Check jj repository (suppress all output)
 if [ -d ".jj" ] || jj root &> /dev/null 2>&1; then
   JJ_REPO="in jj repository"
 else
@@ -34,16 +35,13 @@ if [ ${#ISSUES[@]} -gt 0 ]; then
   done
 fi
 
-# Output JSON
-ESCAPED_CONTEXT=$(echo -e "$CONTEXT" | jq -Rs .)
-
-cat << EOF
-{
+# Output JSON with suppressOutput to keep terminal clean
+jq -n --arg ctx "$(echo -e "$CONTEXT")" '{
+  "suppressOutput": true,
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": $ESCAPED_CONTEXT
+    "additionalContext": $ctx
   }
-}
-EOF
+}'
 
 exit 0
