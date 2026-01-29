@@ -1,0 +1,9 @@
+{
+  "name": "byterover",
+  "version": "1.0.0",
+  "description": "ByteRover project knowledge curation and querying",
+  "author": {
+    "name": "Wee Gigs",
+    "email": "kevin+claude@weegigs.com"
+  }
+}

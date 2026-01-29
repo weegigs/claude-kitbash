@@ -1,0 +1,28 @@
+{
+  "description": "ByteRover context injection and curation reminders",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before ending: If discoveries were made during this session (bug investigations, architectural insights, format specifications, non-obvious lessons), consider curating them with `brv curate`. Only curate if something genuinely worth preserving was learned. Skip if work was routine.",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
