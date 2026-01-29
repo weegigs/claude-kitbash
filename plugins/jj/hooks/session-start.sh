@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # kitbash-jj session-start.sh
-# Validates jj environment and injects workflow context
+# Validates jj environment and provides minimal context (skills have the details)
 
 set -euo pipefail
 
@@ -9,62 +9,26 @@ ISSUES=()
 # Check jj CLI
 if command -v jj &> /dev/null; then
   JJ_VERSION=$(jj --version 2>/dev/null | head -1 || echo "unknown")
-  JJ_STATUS="✓ jj installed ($JJ_VERSION)"
+  JJ_STATUS="jj installed ($JJ_VERSION)"
 else
-  JJ_STATUS="✗ jj not installed"
+  JJ_STATUS="jj not installed"
   ISSUES+=("Install jj: https://martinvonz.github.io/jj/latest/install-and-setup/")
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    ISSUES+=("  macOS: brew install jj")
-  elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    ISSUES+=("  Linux: cargo install --locked jj-cli")
-  fi
 fi
 
 # Check jj repository
 if [ -d ".jj" ] || jj root &> /dev/null 2>&1; then
-  JJ_REPO_STATUS="✓ jj repository found"
+  JJ_REPO="in jj repository"
 else
-  JJ_REPO_STATUS="○ Not a jj repository"
-  ISSUES+=("Initialize: jj git init --colocate (in existing git repo)")
-  ISSUES+=("  Or: jj init (new repo)")
+  JJ_REPO="not a jj repository"
+  ISSUES+=("Initialize: jj git init --colocate")
 fi
 
-# Build context
-CONTEXT="# Jujutsu (jj) Version Control
-
-$JJ_STATUS
-$JJ_REPO_STATUS
-
-## This project uses jj, NOT git
-
-| git command | jj equivalent |
-|-------------|---------------|
-| git status | \`jj status\` |
-| git diff | \`jj diff --git\` |
-| git log | \`jj log\` |
-| git add + commit | \`jj split -m \"msg\" <files>\` |
-| git branch | \`jj bookmark\` |
-| git checkout | \`jj new\` / \`jj edit\` |
-| git stash | (not needed, auto-saved) |
-
-## Key Differences
-- **No staging area** - jj auto-tracks all changes
-- **Working copy** - MUST always have \`(no description set)\`
-- **Commits** - Use \`jj split . -m \"message\"\` (past tense)
-- **Diffs** - Use \`--git\` flag for LLM-compatible output
-
-## CRITICAL: Creating Commits
-\`\`\`bash
-jj split . -m \"Added feature\"     # Commit all changes
-jj split file.rs -m \"Fixed bug\"   # Commit specific file
-jj bookmark set main -r @-         # Move bookmark after commit
-\`\`\`
-
-**NEVER use \`jj describe -m\` without \`-r <rev>\`** - this sets description on working copy, which violates jj convention. Always use \`jj split . -m\` for commits."
+# Build minimal context - skills have the full documentation
+CONTEXT="**jj**: $JJ_STATUS, $JJ_REPO. Load \`/jj\` skill for version control operations."
 
 # Add issues if any
 if [ ${#ISSUES[@]} -gt 0 ]; then
-  CONTEXT+="\n\n## Setup Required\n"
+  CONTEXT+="\n\n**Setup required:**"
   for issue in "${ISSUES[@]}"; do
     CONTEXT+="\n- $issue"
   done
