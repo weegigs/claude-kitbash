@@ -1,0 +1,17 @@
+{
+  "description": "Workflow completion verification hooks",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before ending: If code was modified this session, verify completion. Check: (1) jj status shows no uncommitted changes, (2) all claimed tasks are closed, (3) cop-out scan is clean (no unapproved TODOs, lint suppressions, type bypasses). If any issues found, recommend running /check before ending.",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

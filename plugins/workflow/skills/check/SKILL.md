@@ -9,7 +9,7 @@ Verification checklist before completing a coding session. Skip if no code chang
 
 ## Prerequisites
 
-This project uses **jj (Jujutsu)**, not git:
+This project uses **jj** (Jujutsu), not git:
 - `jj status` (not `git status`)
 - `jj diff --git` (not `git diff`)
 - `jj split -m "message" .` (not `git add` + `git commit`)
@@ -26,8 +26,10 @@ This project uses **jj (Jujutsu)**, not git:
 Independent review required — self-review alone is insufficient.
 
 Run reviews in parallel:
-- **Codex review**: `/codex-review` (uses `@principles`)
-- **Cleaner review**: `@cleaner` agent
+1. `/codex-review` — if Codex CLI available
+2. `@reviewer` agent — always (uses `@principles` + language skills)
+
+Both must pass. If Codex unavailable, `@reviewer` agent alone is sufficient.
 
 Address all issues before proceeding.
 
@@ -35,90 +37,59 @@ Address all issues before proceeding.
 
 - [ ] All changes committed: `jj split -m "description" .`
 - [ ] Messages describe **what changed**, not process
-  - ✓ "Added validation for roster names"
-  - ✓ "Fixed cost calculation overflow"
-  - ✗ "Completed phase 2"
-  - ✗ "Implemented per spec"
+  - Good: "Added validation for roster names"
+  - Good: "Fixed cost calculation overflow"
+  - Bad: "Completed phase 2"
+  - Bad: "Implemented per spec"
 
 ### 4. Task Management
 
 - [ ] TodoWrite items completed or removed
-- [ ] Beads tasks closed: `bd close <id>`
+- [ ] Tasks closed (beads: `bd close <id>`, or mark completed)
 - [ ] If closing last subtask, close parent too
 
-### 5. Deferred Work
+### 5. Cop-Out Scan (MANDATORY)
 
-Scan modified files for work markers:
+This check cannot be skipped. Any finding is a blocker.
 
-```bash
-jj diff --stat | awk '{print $1}' | xargs rg -n "TODO|FIXME|XXX|HACK" 2>/dev/null
-```
+See [../execute/references/cop-outs.md](../execute/references/cop-outs.md) for complete patterns.
 
-For each marker:
-- **Explanatory note** → No action needed
-- **Deferred work** → Create beads task or resolve now
-
-No orphan TODOs — every deferral needs:
-- User agreement
-- Beads task for tracking
-- Clear reason why it can't be done now
-
-### 6. Cop-Out Scan
-
-**MANDATORY** — This check cannot be skipped. Any finding is a blocker.
-
-#### Scan for deferred work markers
+**Quick scans on modified files:**
 
 ```bash
-jj diff --stat | awk '{print $1}' | xargs rg -n "TODO|FIXME|XXX|HACK|PLACEHOLDER|STUB" 2>/dev/null
+# Get modified files
+FILES=$(jj diff --stat | awk '{print $1}')
+
+# Deferred work markers
+echo "$FILES" | xargs rg -n "TODO|FIXME|XXX|HACK|PLACEHOLDER|STUB" 2>/dev/null
+
+# Lint suppressions
+echo "$FILES" | xargs rg -n "#\[allow|eslint-disable|@ts-ignore|noqa|type:\s*ignore" 2>/dev/null
+
+# Type bypasses
+echo "$FILES" | xargs rg -n "as any|as unknown as" 2>/dev/null
+
+# Error swallowing
+echo "$FILES" | xargs rg -n "catch\s*\{\s*\}|catch\s*\(_\)" 2>/dev/null
+
+# Skipped tests
+echo "$FILES" | xargs rg -n "\.skip\(|#\[ignore\]|@pytest\.mark\.skip|xit\(|xdescribe\(" 2>/dev/null
 ```
 
-**Evaluation for each finding:**
+**Evaluation:**
 
-| Finding | Verdict | Required Action |
-|---------|---------|-----------------|
-| TODO with beads reference + user approval | PASS | None |
-| TODO with beads reference, no user approval | **FAIL** | Get user approval or complete now |
-| TODO without beads reference | **FAIL** | Complete now or get approval + create beads |
-| Explanatory comment (not deferred work) | PASS | None |
+| Finding | Verdict |
+|---------|---------|
+| TODO with task ref + user approval | PASS |
+| TODO with task ref, no approval | **FAIL** |
+| TODO without task ref | **FAIL** |
+| Explanatory comment | PASS |
+| Any lint suppression without approval | **FAIL** |
+| Any type bypass | **FAIL** |
+| Any empty catch | **FAIL** |
+| Any skipped test | **FAIL** |
 
-#### Scan for lint suppressions
-
-```bash
-jj diff --stat | awk '{print $1}' | xargs rg -n "#\[allow|eslint-disable|@ts-ignore|noqa|type:\s*ignore" 2>/dev/null
-```
-
-**Verdict: FAIL** unless user explicitly approved each suppression in conversation.
-
-The presence of a lint warning means the code should be fixed, not the warning suppressed.
-
-#### Scan for type bypasses
-
-```bash
-jj diff --stat | awk '{print $1}' | xargs rg -n "as any|as unknown as" 2>/dev/null
-```
-
-**Verdict: FAIL** — Type bypasses are never acceptable. Fix the types properly.
-
-#### Scan for error swallowing
-
-```bash
-jj diff --stat | awk '{print $1}' | xargs rg -n "catch\s*\{\s*\}|catch\s*\(_\)" 2>/dev/null
-```
-
-**Verdict: FAIL** — Empty catches hide failures. Handle errors or propagate them.
-
-#### Scan for skipped tests
-
-```bash
-jj diff --stat | awk '{print $1}' | xargs rg -n "\.skip\(|#\[ignore\]|@pytest\.mark\.skip|xit\(|xdescribe\(" 2>/dev/null
-```
-
-**Verdict: FAIL** — Tests exist to run. Fix or remove them, don't skip them.
-
-#### Key Principle
-
-**Even tracked deferrals require explicit user approval.** A beads reference makes work trackable, but the user must explicitly say "yes, defer that" in the conversation. The agent cannot unilaterally decide to defer work.
+**Key principle:** Even tracked deferrals require explicit user approval in the conversation.
 
 ## Quick Reference
 
@@ -126,10 +97,10 @@ jj diff --stat | awk '{print $1}' | xargs rg -n "\.skip\(|#\[ignore\]|@pytest\.m
 |-------|---------|
 | View changes | `jj diff --git` |
 | Commit | `jj split -m "msg" .` |
-| Close task | `bd close <id>` |
-| Scan markers | `rg "TODO\|FIXME" <files>` |
+| Close task | `bd close <id>` or mark completed |
 
 ## See Also
 
 - `@principles` — Quality standards for code review
-- `@codex-review` — Independent code review via Codex
+- `/codex-review` — Independent code review via Codex
+- `@reviewer` — Code review agent (code-quality plugin)

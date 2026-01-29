@@ -1,27 +1,37 @@
 ---
 name: kick-off
-description: Create an execution plan from a requirement, spec, or beads task. Use when starting new work that needs structured breakdown into tasks.
+description: Create an execution plan from a requirement, spec, or task. Use when starting new work that needs structured breakdown into tasks.
 ---
 
 # Workflow Kick-off
 
 Create a detailed execution plan. Does NOT implement — use `/execute` after approval.
 
-## Plan Mode Required
+## Prerequisites
 
-Kick-off requires plan mode to prevent accidental implementation.
+### Plan Mode
 
-**If not in plan mode:**
+Kick-off requires plan mode. If not active, use the `EnterPlanMode` tool to switch.
+
+### Task Tracking
+
+Detect availability:
+```bash
+command -v bd &> /dev/null && echo "beads" || echo "todowrite"
 ```
-⚠️  Kick-off requires Plan Mode.
 
-Switch to plan mode:
-- Press Shift+Tab until "Plan Mode" shown
-- Or type /plan
-- Or restart with: claude --permission-mode plan
+- **beads available**: Use `bd` commands for full task management
+- **beads unavailable**: Use TodoWrite with naming convention (see references)
 
-Then run /kick-off again.
+### Knowledge Base
+
+Detect ByteRover:
+```bash
+command -v brv &> /dev/null && [ -d ".brv" ] && echo "byterover" || echo "none"
 ```
+
+- **byterover available**: Query prior knowledge before planning
+- **byterover unavailable**: Skip knowledge queries
 
 ## Guardrails
 
@@ -39,40 +49,56 @@ Then run /kick-off again.
    - Free-text description → analyze directly
    - Document reference → read and extract
    - Beads task → `bd show <id>`
+   - Spec file → read from `.agent-os/specs/`
 
-2. **Explore context** — understand:
+2. **Query prior knowledge** (if byterover available):
+   ```bash
+   brv query "What do we know about <topic>?"
+   brv query "Any past issues with <area>?"
+   ```
+   
+   Prior knowledge may reveal lessons learned, architectural decisions, or gotchas. Skip if byterover unavailable.
+
+3. **Explore context** — understand:
    - Related existing code and patterns
    - Dependencies and constraints
    - Similar prior implementations
 
-3. **Inject standards** (if `.agent-os/standards/` exists):
-   - Identify relevant standards
-   - Read via `/standards-inject` or directly
-   - Standards inform implementation patterns
+4. **Inject standards** (if agent-os configured):
+   ```
+   If .agent-os/standards/ exists:
+     Invoke /standards-inject (auto-suggest mode)
+   ```
 
-4. **Ask clarifying questions** (3-5 non-obvious):
+5. **Ask clarifying questions** (3-5 non-obvious):
    - Edge cases, error handling, assumptions
    - Performance, security, backwards compatibility
    - Acceptance criteria and verification approach
 
 ### Phase 2: Task Planning
 
-5. **Create parent task**:
+6. **Create parent task**:
+
+   **With beads:**
    ```bash
    bd create --title="<requirement summary>" --type=feature|task|bug --priority=2
    ```
 
-6. **Identify logical breakpoints**:
+   **Without beads:**
+   ```
+   Add to TodoWrite: "[EPIC-XXX] <requirement summary>"
+   ```
+
+7. **Identify logical breakpoints**:
    - Group into phases (data layer, business logic, UI, etc.)
    - Each phase produces a verifiable, working state
    - Mark critical points requiring code review
 
-7. **Break into atomic subtasks**:
+8. **Break into atomic subtasks**:
    - Each subtask independently verifiable
    - Include acceptance criteria in description
-   - Add dependencies: `bd dep add <subtask> <depends-on>`
-   - Insert checkpoint tasks at phase boundaries:
-     - "Checkpoint: Verify [phase] — quality check, commit, close tasks"
+   - Add dependencies (beads: `bd dep add`, TodoWrite: use ordering)
+   - Insert checkpoint tasks at phase boundaries
    - Add final task: "Final checkpoint: Full workflow verification"
 
 8. **Generate execution plan**:
@@ -84,25 +110,25 @@ Then run /kick-off again.
 **Example structure:**
 ```
 Phase 1: Data Layer
-  - beads-101: Add migration
-  - beads-102: Implement repository
-  - beads-103: Checkpoint: Verify data layer
+  - [EPIC/1] Add migration
+  - [EPIC/2] Implement repository
+  - [EPIC/✓] Checkpoint: Verify data layer
 
 Phase 2: Business Logic
-  - beads-104: Add validation service
-  - beads-105: Implement commands
-  - beads-106: Checkpoint: Verify business logic
+  - [EPIC/3] Add validation service
+  - [EPIC/4] Implement commands
+  - [EPIC/✓] Checkpoint: Verify business logic
 
 Phase 3: Integration
-  - beads-107: Wire up components
-  - beads-108: Final checkpoint
+  - [EPIC/5] Wire up components
+  - [EPIC/✓] Final checkpoint
 ```
 
 ### Phase 3: Handoff
 
 9. **Present plan**:
    - Summary of requirement as understood
-   - Parent and subtask IDs
+   - Task IDs (beads) or TodoWrite items
    - Execution order
    - Remaining uncertainties
 
@@ -112,30 +138,21 @@ Phase 3: Integration
 
 11. **On approval**, remind user:
     - Run `/execute` to begin
-    - Or start manually: `bd update <first-subtask> --claim`
+    - Or start manually with first task
 
 ## Completion Checklist
 
-Before presenting plan:
-
-**Phase 1: Requirement Analysis**
-- [ ] Parsed input (free-text / document / beads)
+- [ ] Parsed input (free-text / document / beads / spec)
+- [ ] Queried prior knowledge (if byterover available)
 - [ ] Explored codebase context
-- [ ] Checked and injected relevant standards
+- [ ] Injected relevant standards (if agent-os configured)
 - [ ] Asked 3-5 clarifying questions
-
-**Phase 2: Task Planning**
-- [ ] Created parent beads task
+- [ ] Created parent task
 - [ ] Identified phases and breakpoints
 - [ ] Created subtasks with acceptance criteria
-- [ ] Added dependencies via `bd dep add`
+- [ ] Added dependencies/ordering
 - [ ] Inserted checkpoint tasks
-- [ ] Added final checkpoint
-
-**Phase 3: Handoff**
 - [ ] Plan summary prepared
-- [ ] All task IDs documented
-- [ ] Execution order clear
 - [ ] Saved to TodoWrite
 
 ## See Also
@@ -143,3 +160,4 @@ Before presenting plan:
 - `/execute` — Execute the plan after approval
 - `/next` — Find next task when resuming
 - `/check` — Verification at checkpoints
+- `/standards-inject` — Inject relevant coding standards (agent-os)

@@ -1,7 +1,7 @@
 {
   "name": "workflow",
-  "version": "1.6.0",
-  "description": "Workflow commands for beads+jj projects",
+  "version": "1.8.0",
+  "description": "Workflow skills for beads+jj projects with TodoWrite fallback and ByteRover integration",
   "author": {
     "name": "Wee Gigs",
     "email": "kevin+claude@weegigs.com"
