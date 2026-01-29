@@ -33,6 +33,11 @@ mise use ruby@3.3      # Ruby
 mise use java@21       # Java
 ```
 
+### Bun
+```bash
+mise use bun@latest    # Bun runtime
+```
+
 ### npm (Node packages)
 ```bash
 mise use npm:prettier
@@ -90,14 +95,13 @@ mise latest node            # Latest version
 
 ```toml
 [tools]
-node = "20"
+bun = "latest"
 python = "3.12"
 rust = "stable"
 
 # With options
-[tools.node]
-version = "20"
-postinstall = "corepack enable"
+[tools.bun]
+version = "latest"
 
 # Backend-specific
 "npm:prettier" = "latest"
@@ -117,10 +121,10 @@ postinstall = "corepack enable"
 
 | Wrong | Why | Correct |
 |-------|-----|---------|
-| `npm install -g prettier` | Bypasses mise | `mise use npm:prettier` |
+| `bun add -g prettier` | Bypasses mise | `mise use npm:prettier` |
 | `pip install black` | Uses system pip | `mise use pipx:black` |
 | `cargo install ripgrep` | Bypasses mise | `mise use cargo:ripgrep` |
-| `brew install node` | System-wide install | `mise use node` |
+| `brew install bun` | System-wide install | `mise use bun` |
 
 ## Upgrading Tools
 
@@ -129,16 +133,16 @@ postinstall = "corepack enable"
 mise upgrade
 
 # Upgrade specific tool
-mise upgrade node
+mise upgrade bun
 
 # Upgrade to specific version
-mise use node@22
+mise use bun@1.2
 ```
 
 ## Removing Tools
 
 ```bash
-mise uninstall node@18      # Remove specific version
+mise uninstall bun@1.0      # Remove specific version
 mise prune                  # Remove unused versions
 ```
 
@@ -149,11 +153,11 @@ mise prune                  # Remove unused versions
 mise ls
 
 # Check tool location
-mise where node
-mise which node
+mise where bun
+mise which bun
 
 # Verify version matches
-mise exec -- node --version
+mise exec -- bun --version
 
 # Check for issues
 mise doctor

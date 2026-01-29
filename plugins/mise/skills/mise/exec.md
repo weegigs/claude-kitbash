@@ -29,10 +29,9 @@ Without `mise exec`, commands use system-installed tools which may:
 
 ### Package Managers
 ```bash
-mise exec -- npm install
-mise exec -- npm run build
+mise exec -- bun install
+mise exec -- bun run build
 mise exec -- pnpm install
-mise exec -- yarn add lodash
 mise exec -- pip install -r requirements.txt
 mise exec -- poetry install
 mise exec -- cargo add serde
@@ -40,7 +39,7 @@ mise exec -- cargo add serde
 
 ### Build Commands
 ```bash
-mise exec -- npm run build
+mise exec -- bun run build
 mise exec -- cargo build --release
 mise exec -- go build ./cmd/app
 mise exec -- python setup.py build
@@ -49,16 +48,15 @@ mise exec -- gradle build
 
 ### Test Commands
 ```bash
-mise exec -- npm test
+mise exec -- bun test
 mise exec -- pytest -v
 mise exec -- cargo test
 mise exec -- go test ./...
-mise exec -- jest --coverage
 ```
 
 ### Development Servers
 ```bash
-mise exec -- npm run dev
+mise exec -- bun run dev
 mise exec -- cargo watch -x run
 mise exec -- flask run
 mise exec -- uvicorn app:main --reload
@@ -66,9 +64,8 @@ mise exec -- uvicorn app:main --reload
 
 ### Linting and Formatting
 ```bash
-mise exec -- npm run lint
-mise exec -- eslint src/
-mise exec -- prettier --write .
+mise exec -- bun run lint
+mise exec -- biome check src/
 mise exec -- cargo fmt
 mise exec -- black .
 mise exec -- ruff check .
@@ -86,22 +83,22 @@ mise exec -- ruff check .
 
 ### Execute shell command string
 ```bash
-mise exec -c "npm test && npm run build"
+mise exec -c "bun test && bun run build"
 ```
 
 ### Run from different directory
 ```bash
-mise exec --cd packages/api -- npm install
+mise exec --cd packages/api -- bun install
 ```
 
 ## Anti-Patterns
 
 | Wrong | Why | Correct |
 |-------|-----|---------|
-| `npm install` | Uses system node | `mise exec -- npm install` |
-| `mise exec npm install` | Missing `--` separator | `mise exec -- npm install` |
+| `bun install` | Uses system bun | `mise exec -- bun install` |
+| `mise exec bun install` | Missing `--` separator | `mise exec -- bun install` |
 | `mise exec -- mise run build` | Double wrapping | `mise run build` |
-| `mise exec "npm test"` | Quotes the whole command | `mise exec -- npm test` |
+| `mise exec "bun test"` | Quotes the whole command | `mise exec -- bun test` |
 
 ## When NOT to Use mise exec
 

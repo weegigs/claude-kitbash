@@ -17,9 +17,9 @@ mise use <tool>              # Latest version
 ## Common Tools
 
 ```bash
-# Node.js
-mise use node@20
-mise use node@lts
+# Bun
+mise use bun@latest
+mise use bun@1.1
 
 # Python
 mise use python@3.12
@@ -43,11 +43,10 @@ mise use java@21
 
 | Format | Example | Behavior |
 |--------|---------|----------|
-| Exact | `node@20.10.0` | Specific version |
-| Major | `node@20` | Latest 20.x |
-| Prefix | `node@20.10` | Latest 20.10.x |
-| Latest | `node` | Latest stable |
-| LTS | `node@lts` | Latest LTS |
+| Exact | `bun@1.1.0` | Specific version |
+| Major | `bun@1` | Latest 1.x |
+| Prefix | `bun@1.1` | Latest 1.1.x |
+| Latest | `bun` | Latest stable |
 
 ## Scope Flags
 
@@ -60,17 +59,17 @@ mise use java@21
 ## Examples
 
 ```bash
-# Set node 20 for this project
-mise use node@20
+# Set bun for this project
+mise use bun@latest
 
 # Pin exact version
-mise use --pin node@20.10.0
+mise use --pin bun@1.1.0
 
 # Set global default
 mise use --global python@3.12
 
 # Multiple tools at once
-mise use node@20 python@3.12 rust@stable
+mise use bun@latest python@3.12 rust@stable
 ```
 
 ## Backends
@@ -101,13 +100,13 @@ mise use go:golang.org/x/tools/gopls
 
 ```bash
 # Available remote versions
-mise ls-remote node
+mise ls-remote bun
 
 # Latest version
-mise latest node
+mise latest bun
 
 # Search for tools
-mise search prettier
+mise search biome
 ```
 
 ## After Adding Tools
@@ -118,17 +117,17 @@ mise install
 
 # Verify installation
 mise ls
-mise where node
+mise where bun
 ```
 
 ## Anti-Patterns
 
 | Wrong | Why | Correct |
 |-------|-----|---------|
-| `nvm use 20` | Bypasses mise | `mise use node@20` |
+| `brew install bun` | Bypasses mise | `mise use bun@latest` |
 | `pyenv install 3.12` | Bypasses mise | `mise use python@3.12` |
 | `rustup default stable` | Bypasses mise | `mise use rust@stable` |
-| `mise use node 20` | Missing `@` | `mise use node@20` |
+| `mise use bun latest` | Missing `@` | `mise use bun@latest` |
 
 ## Verification
 
@@ -140,6 +139,6 @@ cat mise.toml
 mise ls
 
 # Check tool path
-mise where node
-mise exec -- which node
+mise where bun
+mise exec -- which bun
 ```

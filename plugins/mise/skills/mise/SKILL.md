@@ -32,12 +32,12 @@ This ensures:
 
 ```bash
 # CORRECT - Uses mise environment
-mise exec -- npm install
+mise exec -- bun install
 mise exec -- cargo build
 mise exec -- pytest tests/
 
 # WRONG - Bypasses mise, uses system tools
-npm install           # May use wrong node version
+bun install           # May use wrong bun version
 cargo build           # May use wrong rust version
 pytest tests/         # May use wrong python version
 ```
@@ -46,10 +46,10 @@ pytest tests/         # May use wrong python version
 
 | Scenario | Command | Example |
 |----------|---------|---------|
-| Run any CLI tool | `mise exec --` | `mise exec -- npm test` |
+| Run any CLI tool | `mise exec --` | `mise exec -- bun test` |
 | Run defined task | `mise run` | `mise run build` |
 | Install project tools | `mise install` | `mise install` |
-| Add new tool | `mise use` | `mise use node@20` |
+| Add new tool | `mise use` | `mise use bun@latest` |
 
 ## Configuration Detection
 
@@ -63,20 +63,20 @@ Mise is active when any of these files exist:
 
 | Wrong | Why | Correct |
 |-------|-----|---------|
-| `npm install` | Bypasses mise tool versions | `mise exec -- npm install` |
+| `bun install` | Bypasses mise tool versions | `mise exec -- bun install` |
 | `cargo build` | Uses system rust, not project | `mise exec -- cargo build` |
 | `python script.py` | Wrong python version | `mise exec -- python script.py` |
 | `pnpm dev` | Bypasses environment | `mise exec -- pnpm dev` |
-| `mise run npm install` | Tasks are for defined scripts, not arbitrary commands | `mise exec -- npm install` |
+| `mise run bun install` | Tasks are for defined scripts, not arbitrary commands | `mise exec -- bun install` |
 
 ## Correct Usage Examples
 
 ### Package Management
 ```bash
-# Node.js
-mise exec -- npm install
+# Bun/Node.js
+mise exec -- bun install
+mise exec -- bun add lodash
 mise exec -- pnpm add lodash
-mise exec -- yarn build
 
 # Python
 mise exec -- pip install -r requirements.txt
@@ -89,7 +89,7 @@ mise exec -- cargo build --release
 
 ### Running Tests
 ```bash
-mise exec -- npm test
+mise exec -- bun test
 mise exec -- pytest
 mise exec -- cargo test
 mise exec -- go test ./...
@@ -97,7 +97,7 @@ mise exec -- go test ./...
 
 ### Development Servers
 ```bash
-mise exec -- npm run dev
+mise exec -- bun run dev
 mise exec -- cargo watch -x run
 mise exec -- flask run
 ```

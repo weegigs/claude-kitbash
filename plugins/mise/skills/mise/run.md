@@ -95,7 +95,7 @@ run = "echo 'All checks passed'"
 
 | Wrong | Why | Correct |
 |-------|-----|---------|
-| `mise run npm install` | `npm install` isn't a task | `mise exec -- npm install` |
+| `mise run bun install` | `bun install` isn't a task | `mise exec -- bun install` |
 | `mise exec -- mise run build` | Double wrapping | `mise run build` |
 | `mise run cargo build` | `cargo build` isn't a task | `mise exec -- cargo build` |
 | `mise run` (no task) | Must specify task | `mise tasks ls` to see tasks |
@@ -105,9 +105,9 @@ run = "echo 'All checks passed'"
 | Scenario | Use | Example |
 |----------|-----|---------|
 | Run defined project task | `mise run` | `mise run build` |
-| Run arbitrary CLI command | `mise exec --` | `mise exec -- npm install` |
+| Run arbitrary CLI command | `mise exec --` | `mise exec -- bun install` |
 | Check what tasks exist | `mise tasks ls` | `mise tasks ls` |
-| One-off command | `mise exec --` | `mise exec -- npx create-app` |
+| One-off command | `mise exec --` | `mise exec -- bunx create-app` |
 
 ## Verification
 
