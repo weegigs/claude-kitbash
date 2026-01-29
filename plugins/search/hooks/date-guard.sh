@@ -1,28 +1,39 @@
 #!/bin/bash
 # Date Guard Hook: Blocks searches with outdated years
-# Usage: Called by Claude Code PreToolUse hook for WebSearch/Perplexity
-# Input: JSON via stdin (not env vars!)
+# Usage: Called by Claude Code PreToolUse hook for WebSearch/Perplexity tools
+# Input: JSON via stdin
+# Output: JSON for quiet, controlled UX
+
+set -euo pipefail
 
 # Read JSON from stdin
 INPUT=$(cat)
 
-# Extract tool name and query from stdin JSON
+# Extract tool name from stdin JSON
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
 
+# Extract query based on tool type
+# All current tools use tool_input.query
 case "$TOOL_NAME" in
-  WebSearch)
+  WebSearch|mcp__perplexity__*)
     QUERY=$(echo "$INPUT" | jq -r '.tool_input.query // empty')
     ;;
-  mcp__perplexity__perplexity_ask)
-    QUERY=$(echo "$INPUT" | jq -r '.tool_input.messages[].content // empty')
-    ;;
   *)
+    # Unknown tool - allow silently
+    echo '{"suppressOutput":true}'
     exit 0
     ;;
 esac
 
+# Empty query - allow silently
+if [ -z "$QUERY" ]; then
+  echo '{"suppressOutput":true}'
+  exit 0
+fi
+
 # Opt-out: allow historical queries
 if echo "$QUERY" | grep -qiE '(historical|archive|history of|in the past)'; then
+  echo '{"suppressOutput":true}'
   exit 0
 fi
 
@@ -35,11 +46,23 @@ FOUND_YEARS=$(echo "$QUERY" | grep -oE '\b20[0-2][0-9]\b' | sort -u)
 # Check if any year is stale
 for year in $FOUND_YEARS; do
   if [ "$year" -lt "$CURRENT_YEAR" ]; then
-    echo "BLOCKED: Query contains outdated year '$year' but TODAY is $CURRENT_MONTH $CURRENT_YEAR." >&2
-    echo "Retry with '$CURRENT_YEAR' instead of '$year' for current information." >&2
-    echo "(Add 'historical' to query if you intentionally need past data)" >&2
-    exit 2
+    # Block with JSON output for clean UX
+    REASON="Query contains outdated year '$year'. Current date is $CURRENT_MONTH $CURRENT_YEAR. Retry with '$CURRENT_YEAR' for current information. (Add 'historical' to query for past data)"
+
+    # Output JSON with deny decision
+    jq -n \
+      --arg reason "$REASON" \
+      '{
+        "hookSpecificOutput": {
+          "hookEventName": "PreToolUse",
+          "permissionDecision": "deny",
+          "permissionDecisionReason": $reason
+        }
+      }'
+    exit 0
   fi
 done
 
+# Allow - suppress output for quiet experience
+echo '{"suppressOutput":true}'
 exit 0
