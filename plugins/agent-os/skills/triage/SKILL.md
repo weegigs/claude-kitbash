@@ -13,193 +13,71 @@ Interactive issue discovery with batch evaluation. Walk through an application, 
 /triage [area or focus]
 ```
 
-## Session States
+## Session Flow
 
 ### 1. Discovery Mode (default)
 
-Capture issues quickly without deep analysis:
-
 ```
-Ready to capture issues. Describe what you see - I'll note it and move on.
+Ready to capture issues in [area]. Describe what you see.
 
-Commands:
-  "next" / "continue" - done with this issue, ready for next
-  "done" / "evaluate" - finish discovery, begin evaluation
+Commands: "next" (ready for next) | "done" (begin evaluation)
 ```
 
-**For each issue reported:**
-
-1. Capture in TodoWrite with prefix `[TRIAGE]`:
-   ```
-   [TRIAGE] Brief description of issue
-   ```
-
-2. Acknowledge briefly:
-   ```
-   Noted: [summary]. Next?
-   ```
-
-3. Do NOT:
-   - Deep-dive into root cause
-   - Propose solutions
-   - Ask clarifying questions (save for evaluation)
+**For each issue:**
+1. Capture in TodoWrite: `[TRIAGE] Brief description`
+2. Acknowledge: `Noted: [summary]. Next?`
+3. Do NOT deep-dive or propose solutions
 
 ### 2. Evaluation Mode
 
-When user says "done" or "evaluate":
+When user says "done":
 
-**Step 1: List captured issues**
+1. List all `[TRIAGE]` items
+2. Assess each for type, severity, complexity
+3. Present summary table grouped by severity
+
+See [references/classification.md](references/classification.md) for assessment criteria.
+
+### 3. Action Mode
 
 ```
-Captured N issues:
-
-1. [TRIAGE] Issue description
-2. [TRIAGE] Issue description
-...
-
-Beginning evaluation...
+Actions:
+  1. Create beads tasks (XS/S items)
+  2. Create epic + tasks (related items)
+  3. Start /spec (M+ complexity)
+  4. Export summary
+  5. Done
 ```
 
-**Step 2: Assess each issue**
+**Routing:**
+- XS/S complexity → beads task
+- M+ complexity → `/spec`
+- Related issues → group under epic
 
-For each issue, determine:
-
-| Factor | Assessment |
-|--------|------------|
-| **Type** | bug / feature / refactor / chore |
-| **Severity** | critical / major / minor / cosmetic |
-| **Complexity** | XS / S / M / L / XL |
-
-**Severity criteria:**
-- **Critical**: Blocks core functionality, data loss risk
-- **Major**: Significantly impacts user experience
-- **Minor**: Inconvenient but workaround exists
-- **Cosmetic**: Visual/polish issues only
-
-**Complexity criteria (from project standards):**
-- **XS**: Trivial change, single location
-- **S**: Single module, clear fix
-- **M**: Multi-module, some investigation
-- **L**: Complex workflows, architectural consideration
-- **XL**: System redesign, major refactoring
-
-**Step 3: Present assessment**
+## Output Format
 
 ```
 ## Triage Summary
 
-### Critical (do first)
-| Issue | Type | Complexity | Recommendation |
-|-------|------|------------|----------------|
-| ... | bug | S | beads task |
+### Critical
+| Issue | Type | Complexity | Action |
+|-------|------|------------|--------|
 
 ### Major
-| Issue | Type | Complexity | Recommendation |
-|-------|------|------------|----------------|
-| ... | feature | M | /spec |
-
-### Minor
 ...
 
-### Cosmetic
+### Minor / Cosmetic
 ...
 ```
 
-**Recommendations:**
-- XS/S complexity → Create beads task directly
-- M+ complexity → Route to `/spec` for full specification
-- Related issues → Group under epic
+## References
 
-### 3. Action Mode
-
-After evaluation, offer actions:
-
-```
-Actions:
-  1. Create beads tasks for XS/S items
-  2. Create epic + tasks for related items
-  3. Start /spec for complex item
-  4. Export summary to file
-  5. Done (clear triage items)
-```
-
-## Integration
-
-**With beads:**
-```bash
-# Quick task creation
-bd create "[issue]" -t bug -p 2
-
-# For grouped issues
-bd create "Epic: [area]" -t epic
-bd create "[issue]" -t bug --parent <epic-id>
-```
-
-**With agent-os:**
-```
-# Complex issues route to spec
-/spec [issue description]
-```
-
-**With ByteRover (if available):**
-```bash
-# Query for known issues in area
-brv query "issues with [area]"
-```
-
-## Example Session
-
-```
-User: /triage checkout flow
-
-Claude: Ready to capture issues in checkout flow. 
-        Describe what you see - I'll note it and move on.
-
-User: The total doesn't update when I change quantity
-
-Claude: Noted: Cart total not updating on quantity change. Next?
-
-User: Also the apply coupon button is misaligned on mobile
-
-Claude: Noted: Coupon button alignment issue on mobile. Next?
-
-User: When I enter an invalid card, the error message is confusing
-
-Claude: Noted: Unclear error message for invalid card. Next?
-
-User: done
-
-Claude: Captured 3 issues:
-        1. Cart total not updating on quantity change
-        2. Coupon button alignment issue on mobile  
-        3. Unclear error message for invalid card
-
-        ## Triage Summary
-
-        ### Major
-        | Issue | Type | Complexity | Recommendation |
-        |-------|------|------------|----------------|
-        | Cart total not updating | bug | S | beads task |
-        | Unclear card error | bug | XS | beads task |
-
-        ### Cosmetic
-        | Issue | Type | Complexity | Recommendation |
-        |-------|------|------------|----------------|
-        | Coupon button alignment | chore | XS | beads task |
-
-        Actions:
-        1. Create beads tasks for all items
-        2. Start /spec for complex item
-        3. Export summary
-        4. Done
-```
-
-## Completion
-
-Clear triage items from TodoWrite when session ends.
+- [classification.md](references/classification.md) - Severity and complexity criteria
+- [examples.md](references/examples.md) - Session examples by type
+- [integration.md](references/integration.md) - Beads, specs, ByteRover patterns
 
 ## See Also
 
 - `/spec` - Full specification for complex issues
-- `@beads` - Task creation and management
-- `/kick-off` - Execution planning after triage
+- `@beads` - Task creation
+- `/kick-off` - Execution planning
