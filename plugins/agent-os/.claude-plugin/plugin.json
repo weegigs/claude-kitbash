@@ -1,7 +1,7 @@
 {
   "name": "agent-os",
-  "version": "1.4.0",
-  "description": "Standards discovery, documentation, and spec planning for AI-assisted development",
+  "version": "1.5.0",
+  "description": "Standards discovery, spec planning, triage, and product documentation for AI-assisted development",
   "author": {
     "name": "Wee Gigs",
     "email": "kevin+claude@weegigs.com"
